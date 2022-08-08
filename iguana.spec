@@ -33,7 +33,7 @@ BuildRequires:  make
 Initrd for container based, expandable installation and recovery.
 
 %prep
-%setup -q -n %{name}
+%setup -q
 
 %build
 %make_build
