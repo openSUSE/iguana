@@ -22,7 +22,7 @@ Release:        0
 Summary:        Container enhanced initrd
 License:        GPL-2.0-only
 URL:            https://github.com/aaannz/iguana
-Source:         %{name}-%{version}.txz
+Source:         %{name}-%{version}.tar
 BuildRequires:  dracut-iguana
 BuildRequires:  iguana-workflow
 BuildRequires:  kernel-default
