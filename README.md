@@ -48,9 +48,11 @@ Every container started by iguana is running in **privileged** mode with host ne
 
 Machine ID is provided in `/iguana/machine-id` file.
 
-Iguana **expects** `/iguana/newroot_device` file after last container is finished. This file is in format
+Iguana **expects** `/iguana/mountlist` file after last container is finished. This file is in format
 
-    `device mountpoint`
+```
+    device mountpoint
+```
 
 Where Iguana will mount these devices before dracut will try to do switch root.
 
