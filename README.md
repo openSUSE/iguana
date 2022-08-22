@@ -12,7 +12,7 @@ Iguana is split in multiple repositories:
 - Iguana orchestrator [iguana-workflow](https://github.com/aaannz/iguana-workflow)
 - This overall project
 
-Packages are available for openSUSE systems at [OBS]():
+Packages are available for openSUSE systems at [OBS](https://build.opensuse.org):
 
 - [dracut-iguana](https://build.opensuse.org/package/show/home:oholecek/dracut-iguana)
 - [iguana-workflow](https://build.opensuse.org/package/show/home:oholecek/iguana-workflow)
@@ -36,7 +36,7 @@ Iguana understands three kernel command line options which are used for influenc
 - rd.iguana.containers <container_image>, ...
     Use to manually set what container(s) to run. This will make Iguana to pull and start containers.
 - rd.iguana.control_url
-    Use to point Iguana to [iguana workflow file](https://github.com/aaannz/iguana-workflow/blob/main/Workflow.md) on some URL
+    Use to point Iguana to [iguana workflow file](https://github.com/aaannz/iguana-workflow/blob/main/Workflow.md) on some URL. For example running containerized d-installer use `rd.iguana.control_url=https://raw.githubusercontent.com/aaannz/iguana-workflow/main/examples/d-installer.yaml`
 - rd.iguana.debug
     Set to 1 to enable verbose logging
 
@@ -47,5 +47,11 @@ For Iguana to work correctly and enable correct boot after containers run is fin
 Every container started by iguana is running in **privileged** mode with host networking. They will have `/iguana` volume bind mounted to provide sharing configuration and results between containers and host.
 
 Machine ID is provided in `/iguana/machine-id` file.
+
+Iguana **expects** `/iguana/newroot_device` file after last container is finished. This file is in format
+
+    `device mountpoint`
+
+Where Iguana will mount these devices before dracut will try to do switch root.
 
 ## Contributing
