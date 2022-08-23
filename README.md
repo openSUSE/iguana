@@ -46,14 +46,17 @@ Iguana understands three kernel command line options which are used for influenc
 For Iguana to work correctly and enable correct boot after containers run is finished there are couple assumptions and expectations.
 Every container started by iguana is running in **privileged** mode with host networking. They will have `/iguana` volume bind mounted to provide sharing configuration and results between containers and host.
 
-Machine ID is provided in `/iguana/machine-id` file.
+### Expectations and provides
 
-Iguana **expects** `/iguana/mountlist` file after last container is finished. This file is in format
+- Machine ID is provided in `/iguana/machine-id` file.
+- Iguana **expects** `/iguana/mountlist` file after last container is finished. Each line contains device and mountpoint and Iguana will mount all mounts in order specified.
 
 ```
     device mountpoint
+    device2 mountpoint2
+    ...
 ```
 
-Where Iguana will mount these devices before dracut will try to do switch root.
+- Iguana reads `/iguana/kernelAction` file if exists and if it has value `kexec` then iguana will call `kexec -e` before finishing.
 
 ## Contributing
