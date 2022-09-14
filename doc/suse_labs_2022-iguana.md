@@ -119,5 +119,6 @@ Iguana cannot and will not do much on its own. It needs installation containers 
 ## Resources
 
 - [Iguana GitHub project](https://github.com/aaannz/iguana)
+- [Wofkflow module](https://github.com/aaannz/iguana-workflow)
 - [Workflow syntax description](https://github.com/aaannz/iguana-workflow/blob/main/Workflow.md)
 - [Uyuni Saltboot container and workflow](https://github.com/aaannz/iguana/pull/1/files)
