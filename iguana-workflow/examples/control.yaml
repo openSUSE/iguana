@@ -1,0 +1,26 @@
+name: Test installation control YAML
+
+jobs:
+  dinstaller:
+    container:
+      image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-web
+      volumes:
+        - dbus_run:/var/run/dbus
+      env:
+        TEST: test_env
+    services:
+      backend:
+        image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-backend
+        volumes:
+          - dbus_run:/var/run/dbus
+        env:
+          SERVICE: test_service_env
+  busybox:
+    container:
+      image: registry.opensuse.org/opensuse/busybox:latest
+    needs:
+      - dinstaller
+    steps:
+      - run: /bin/bash
+env:
+  GLOBAL: test_global_env
