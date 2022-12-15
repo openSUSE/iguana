@@ -6,17 +6,17 @@ Universal Linux distributions, such as SLES or openSUSE, have vastly different u
 
 Iguana itself strives to contain as little logic as possible just to prepare environment to run containers and provide simple orchestration of them.
 
-Iguana is split in multiple repositories:
+Iguana is split in multiple packages:
 
-- Dracut module [dracut-iguana](https://github.com/aaannz/dracut-iguana)
-- Iguana orchestrator [iguana-workflow](https://github.com/aaannz/iguana-workflow)
+- Dracut module [dracut-iguana](https://github.com/openSUSE/iguana/tree/main/dracut-iguana)
+- Iguana orchestrator [iguana-workflow](https://github.com/openSUSE/iguana/tree/main/iguana-workflow)
 - This overall project
 
 Packages are available for openSUSE systems at [OBS](https://build.opensuse.org):
 
-- [dracut-iguana](https://build.opensuse.org/package/show/home:oholecek/dracut-iguana)
-- [iguana-workflow](https://build.opensuse.org/package/show/home:oholecek/iguana-workflow)
-- [iguana initrd](https://build.opensuse.org/package/show/home:oholecek/iguana)
+- [dracut-iguana](https://build.opensuse.org/package/show/home:oholecek:iguana/dracut-iguana)
+- [iguana-workflow](https://build.opensuse.org/package/show/home:oholecek:iguana/iguana-workflow)
+- [iguana initrd](https://build.opensuse.org/package/show/home:oholecek:iguana/iguana)
 
 ## Testing iguana
 
@@ -36,7 +36,7 @@ Iguana understands three kernel command line options which are used for influenc
 - rd.iguana.containers <container_image>, ...
     Use to manually set what container(s) to run. This will make Iguana to pull and start containers.
 - rd.iguana.control_url
-    Use to point Iguana to [iguana workflow file](https://github.com/aaannz/iguana-workflow/blob/main/Workflow.md) on some URL. For example running containerized d-installer use `rd.iguana.control_url=https://raw.githubusercontent.com/aaannz/iguana-workflow/main/examples/d-installer.yaml`
+    Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md) on some URL. For example running containerized d-installer use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/d-installer.yaml`
 - rd.iguana.debug
     Set to 1 to enable verbose logging
 

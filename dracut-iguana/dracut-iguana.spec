@@ -22,7 +22,7 @@ Release:        0
 Summary:        Container based dracut module
 License:        GPL-2.0-only
 Group:          System/Packages
-URL:            https://github.com/aaannz/iguana
+URL:            https://github.com/openSUSE/iguana
 Source:         %{name}-%{version}.tar
 BuildRequires:  dracut
 Requires:       curl
