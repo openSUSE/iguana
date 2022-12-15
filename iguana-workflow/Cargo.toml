@@ -1,0 +1,21 @@
+[package]
+name = "iguana-workflow"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "3.2.14", features = ["derive"] }
+env_logger = "0.9.0"
+linked-hash-map = { version = "0.5.6", features = ["serde_impl"] }
+log = "0.4.17"
+serde = { version = "1.0.140", features = ["derive"] }
+serde_yaml = "0.9.10"
