@@ -21,7 +21,7 @@ Version:        0.0.0
 Release:        0
 Summary:        Iguana initrd workflow parser and executor
 License:        GPL-2.0-only
-URL:            https://github.com/aaannz/iguana-workflow
+URL:            https://github.com/aaannz/iguana
 Source0:        %{name}-%{version}.tar.xz
 Source1:        vendor.tar.xz
 Source2:        cargo_config

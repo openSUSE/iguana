@@ -11,8 +11,8 @@ Implementation of iguana workflow parser. Iguana workflow is a YAML document loo
 To build the tool you will need rust 2021 edition (v1.56 and newer) and related cargo binary.
 
 ```
-git clone https://github.com/aaannz/iguana-workflow
-cd iguana-workflow
+git clone https://github.com/aaannz/iguana
+cd iguana/iguana-workflow
 cargo build
 ```
 
@@ -25,7 +25,7 @@ cargo build --release
 
 [osc](https://openbuildservice.org/help/manuals/obs-user-guide/art.obs.bg.html#sec.obsbg.req) tool is required for submitting to the [OBS project](https://build.opensuse.org/package/show/home:oholecek/iguana-workflow)
 
-Project is configured to follow [iguana-workflow GitHub repo](https://github.com/aaannz/iguana-workflow). For contributions please create pull requests.
+Project is configured to follow [iguana-workflow GitHub repo](https://github.com/aaannz/iguana). For contributions please create pull requests.
 
 Follow this guide if you want to create your own testing package.
 
