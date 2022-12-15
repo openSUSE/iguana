@@ -1,15 +1,15 @@
 pr_workflow:
   steps:
     - branch_package:
-        source_project: home:oholecek
+        source_project: home:oholecek:iguana
         source_package: dracut-iguana
         target_project: home:oholecek:iguana:PRs
     - branch_package:
-        source_project: home:oholecek
+        source_project: home:oholecek:iguana
         source_package: iguana-workflow
         target_project: home:oholecek:iguana:PRs
     - branch_package:
-        source_project: home:oholecek
+        source_project: home:oholecek:iguana
         source_package: iguana
         target_project: home:oholecek:iguana:PRs
   filters:
@@ -17,13 +17,8 @@ pr_workflow:
 rebuild_master:
   steps:
     - trigger_services:
-        project: home:oholecek
+        project: home:oholecek:iguana
         package: dracut-iguana
-        project: home:oholecek
-        package: iguana
-    - trigger_services:
-        project: home:oholecek
-        package: iguana-workflow
   filters:
     event: push
     branches:
