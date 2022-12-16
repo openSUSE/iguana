@@ -2,6 +2,8 @@
 
 [ -n "$IGUANA_DEBUG" ] && set -x
 
+. /lib/dracut-iguana-lib.sh
+
 if [ "$root"x != "iguanabootx" ]; then
   if [ -z "${IGUANA_CONTAINERS}${IGUANA_CONTROL_URL}" ]; then
     # only boot iguana on existing root if we really intend to
@@ -40,13 +42,6 @@ fi
 echo -n > /iguana/dc_progress
 bash -c 'tail -f /iguana/dc_progress | while true ; do read msg ; echo "$msg" > /iguana/progress ; done' &
 DC_PROGRESS_PID=$!
-
-if ! declare -f Echo > /dev/null ; then
-  Echo() {
-    echo -e "$@"
-    echo -e "$@" > /iguana/progress
-  }
-fi
 
 Echo "Preparing Iguana boot environment"
 
@@ -141,24 +136,31 @@ fi
 
 Echo "Containers run finished"
 
-# Mount new roots for upcoming switch_root
-if [ -f /iguana/mountlist ]; then
-  cat /iguana/mountlist | while read device mountpoint; do
-    mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
-    if [ "$mountpoint" == "$NEWROOT" ]; then
-      root=$device
-    fi
-  done
+# First if workflow set kernelAction then do that
+if [ -f /iguana/kernelAction ]; then
+  KERNEL_ACTION=$(cat /iguana/kernelAction)
+  iguana_reboot_action "$KERNEL_ACTION"
 fi
 
-[ -f /iguana/kernelAction ] && KERNEL_ACTION=$(cat /iguana/kernelAction)
-
-if [ "$KERNEL_ACTION" == "kexec" ]; then
-  umount -a
-  sync
-  kexec -e
-  Echo "Preloaded kexec failed!"
+# If we are still alive, mount new root for upcoming switch_root
+if [ ! -f /iguana/mountlist ]; then
+  # Call default root detection based on DPS in case workflow did not create it
+  guess_root_mount
 fi
+
+# If we still do not have any mount list our only option is to reboot and hope for the best
+if [ ! -f /iguana/mountlist ]; then
+  Echo "No partitions to boot from detected! Rebooting in 5 seconds"
+  sleep 5
+  iguana_reboot_action "reboot"
+fi
+
+cat /iguana/mountlist | while read device mountpoint; do
+  mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
+  if [ "$mountpoint" == "$NEWROOT" ]; then
+    root=$device
+  fi
+done
 
 # TODO: add proper kernel action parsing
 # TODO: this is really naive
@@ -172,13 +174,10 @@ if mount | grep -q "$NEWROOT"; then
     kexec -l "${NEWROOT}/boot/vmlinuz" --initrd="${NEWROOT}/boot/initrd" --reuse-cmdline
     umount -a
     sync
-    kexec -e
-    Echo "Kexec failed, rebooting with correct kernel version in 5s"
-    sleep 5
-    reboot -f
+    iguana_reboot_action "kexec"
   fi
 else
-  Echo "[WARN] New root not mounted!"
+  emergency_shell -n "iguana" "New root not mounted and no reboot requested!"
 fi
 
 [ -n "$PROGRESS_PID" ] && kill $PROGRESS_PID
