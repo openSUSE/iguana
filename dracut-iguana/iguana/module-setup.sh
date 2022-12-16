@@ -39,7 +39,7 @@ container_reqs() {
 install() {
     inst_multiple -o $(container_reqs)
 
-    inst_multiple grep ldconfig date dbus-uuidgen systemd-machine-id-setup dmidecode seq \
+    inst_multiple grep ldconfig date dbus-uuidgen systemd-machine-id-setup seq \
                   curl head sync tail kexec iguana-workflow
 
     #TODO
@@ -47,6 +47,7 @@ install() {
 
     inst_hook cmdline 91 "$moddir/iguana-root.sh"
     inst_hook pre-mount 99 "$moddir/iguana.sh"
+    inst_simple "$moddir/iguana-lib.sh" "/lib/dracut-iguana-lib.sh"
     inst_hook initqueue/timeout 99 "$moddir/iguana-timeout.sh"
 
     #TODO: make network requirement optional, e.g. for ISO use
