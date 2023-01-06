@@ -98,7 +98,7 @@ EOF
 # - directory with results
 
 IGUANA_BUILDIN_CONTROL="/etc/iguana/control.yaml"
-IGUANA_CMDLINE_EXTRA="--newroot=${NEWROOT} ${IGUANA_DEBUG:+--debug --log-level=debug}"
+IGUANA_CMDLINE_EXTRA="--newroot='${NEWROOT}' ${IGUANA_DEBUG:+--debug --log-level=debug}"
 
 if [ -n "$IGUANA_CONTROL_URL" ]; then
   if ! curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"; then
@@ -108,7 +108,7 @@ if [ -n "$IGUANA_CONTROL_URL" ]; then
 fi
 
 if [ -f control_url.yaml ]; then
-  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" control_url.yaml
+  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA control_url.yaml
 elif [ -n "$IGUANA_CONTAINERS" ]; then
   Echo "Using container list from kcmdline: ${IGUANA_CONTAINERS}"
   readarray -d , -t container_array <<< "$IGUANA_CONTAINERS"
@@ -127,10 +127,10 @@ EOH
 EOF
   N=$(( N + 1 ))
   done
-  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" /control_containers.yaml
+  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA /control_containers.yaml
 # control.yaml is buildin control file in initrd
 elif [ -f "$IGUANA_BUILDIN_CONTROL" ]; then
-  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" "$IGUANA_BUILDIN_CONTROL"
+  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA "$IGUANA_BUILDIN_CONTROL"
 fi
 
 Echo "Containers run finished"
