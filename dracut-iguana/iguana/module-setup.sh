@@ -40,8 +40,8 @@ install() {
     # container requires
     inst_multiple -o $(container_reqs)
 
-    inst_multiple grep ldconfig date dbus-uuidgen systemd-machine-id-setup seq \
-                  curl head sync tail kexec
+    inst_multiple grep ldconfig date systemd-machine-id-setup \
+                  curl sync tail kexec
 
     # needed for partition discovery
     inst_multiple lsblk jq

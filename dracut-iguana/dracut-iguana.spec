@@ -34,6 +34,7 @@ Requires:       kexec-tools
 Requires:       podman
 Requires:       procps
 Requires:       wicked
+Requires:       jq
 BuildArch:      noarch
 
 %description
