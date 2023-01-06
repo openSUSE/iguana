@@ -47,11 +47,10 @@ install() {
     inst_multiple lsblk jq
 
     # standard iguana
-    inst_single iguana-workflow
+    inst_simple iguana-workflow
 
     #TODO
     #install SUSE CA as a trust anchor
-
 
     inst_hook cmdline 91 "$moddir/iguana-root.sh"
     inst_hook pre-mount 99 "$moddir/iguana.sh"

@@ -45,7 +45,7 @@ DC_PROGRESS_PID=$!
 
 Echo "Preparing Iguana boot environment"
 
-if [ -n "$EXISTING_ROOT"] && mount "$EXISTING_ROOT" "$NEWROOT"; then
+if [ -n "$EXISTING_ROOT" ] && mount "$EXISTING_ROOT" "$NEWROOT"; then
   # We have already existing root, mount it and copy persistent data
   cp "$NEWROOT/etc/machine-id" /etc/machine-id
   # .. add anything to be machine stable here
@@ -101,15 +101,14 @@ IGUANA_BUILDIN_CONTROL="/etc/iguana/control.yaml"
 IGUANA_CMDLINE_EXTRA="--newroot=${NEWROOT} ${IGUANA_DEBUG:+--debug --log-level=debug}"
 
 if [ -n "$IGUANA_CONTROL_URL" ]; then
-  curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"
-  if [ $? -ne 0 ]; then
+  if ! curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"; then
     Echo "Failed to download provided control file, ignoring"
     sleep 5
   fi
 fi
 
 if [ -f control_url.yaml ]; then
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA control_url.yaml
+  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" control_url.yaml
 elif [ -n "$IGUANA_CONTAINERS" ]; then
   Echo "Using container list from kcmdline: ${IGUANA_CONTAINERS}"
   readarray -d , -t container_array <<< "$IGUANA_CONTAINERS"
@@ -120,18 +119,18 @@ name: Dynamic containers yaml
 jobs:
 EOH
   N=0
-  for c in "${container_array}"; do
+  for c in "${container_array[@]}"; do
     cat >> /control_containers.yaml << EOF
   job${N}:
     container:
       image: ${c}
 EOF
-  let N=$N+1
+  N=$(( N + 1 ))
   done
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA /control_containers.yaml
+  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" /control_containers.yaml
 # control.yaml is buildin control file in initrd
 elif [ -f "$IGUANA_BUILDIN_CONTROL" ]; then
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA "$IGUANA_BUILDIN_CONTROL"
+  $IGUANA_WORKFLOW "$IGUANA_CMDLINE_EXTRA" "$IGUANA_BUILDIN_CONTROL"
 fi
 
 Echo "Containers run finished"
@@ -155,24 +154,24 @@ if [ ! -f /iguana/mountlist ]; then
   iguana_reboot_action "reboot"
 fi
 
-cat /iguana/mountlist | while read device mountpoint; do
+while read device mountpoint; do
   if [ "$mountpoint" == "$NEWROOT" ]; then
     root=$device
-    if is_root_encrypted $device; then
+    if is_root_encrypted "$device"; then
       Echo "Encrypted root partition detected, rebooting"
       iguana_reboot_action "reboot"
     fi
   fi
   mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
-done
+done < /iguana/mountlist
 
 # TODO: add proper kernel action parsing
 # TODO: this is really naive
 # Scan $NEWROOT for installed kernel, initrd and command line
 # in case installed system has different kernel then the one we are running we need to kexec to new one
 if mount | grep -q "$NEWROOT"; then
-  CUR_KERNEL=$(cat /proc/version | sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p')
-  NEW_KERNEL=$(ls ${NEWROOT}/lib/modules/)
+  CUR_KERNEL=$(sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p' < /proc/version)
+  NEW_KERNEL=$(ls "${NEWROOT}/lib/modules/")
   if [ "$CUR_KERNEL" != "$NEW_KERNEL" ]; then
     Echo "Initrd kernel '${CUR_KERNEL}' is different from installed kernel '${NEW_KERNEL}'. Trying kexec"
     kexec -l "${NEWROOT}/boot/vmlinuz" --initrd="${NEWROOT}/boot/initrd" --reuse-cmdline
