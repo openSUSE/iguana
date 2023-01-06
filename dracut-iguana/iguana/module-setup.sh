@@ -37,16 +37,24 @@ container_reqs() {
 
 # called by dracut
 install() {
+    # container requires
     inst_multiple -o $(container_reqs)
 
-    inst_multiple grep ldconfig date dbus-uuidgen systemd-machine-id-setup dmidecode seq \
-                  curl head sync tail kexec iguana-workflow
+    inst_multiple grep ldconfig date systemd-machine-id-setup \
+                  curl sync tail kexec
+
+    # needed for partition discovery
+    inst_multiple lsblk jq
+
+    # standard iguana
+    inst_simple iguana-workflow
 
     #TODO
     #install SUSE CA as a trust anchor
 
     inst_hook cmdline 91 "$moddir/iguana-root.sh"
     inst_hook pre-mount 99 "$moddir/iguana.sh"
+    inst_simple "$moddir/iguana-lib.sh" "/lib/dracut-iguana-lib.sh"
     inst_hook initqueue/timeout 99 "$moddir/iguana-timeout.sh"
 
     #TODO: make network requirement optional, e.g. for ISO use

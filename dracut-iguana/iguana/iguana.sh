@@ -2,6 +2,8 @@
 
 [ -n "$IGUANA_DEBUG" ] && set -x
 
+. /lib/dracut-iguana-lib.sh
+
 if [ "$root"x != "iguanabootx" ]; then
   if [ -z "${IGUANA_CONTAINERS}${IGUANA_CONTROL_URL}" ]; then
     # only boot iguana on existing root if we really intend to
@@ -41,16 +43,9 @@ echo -n > /iguana/dc_progress
 bash -c 'tail -f /iguana/dc_progress | while true ; do read msg ; echo "$msg" > /iguana/progress ; done' &
 DC_PROGRESS_PID=$!
 
-if ! declare -f Echo > /dev/null ; then
-  Echo() {
-    echo -e "$@"
-    echo -e "$@" > /iguana/progress
-  }
-fi
-
 Echo "Preparing Iguana boot environment"
 
-if [ -n "$EXISTING_ROOT"] && mount "$EXISTING_ROOT" "$NEWROOT"; then
+if [ -n "$EXISTING_ROOT" ] && mount "$EXISTING_ROOT" "$NEWROOT"; then
   # We have already existing root, mount it and copy persistent data
   cp "$NEWROOT/etc/machine-id" /etc/machine-id
   # .. add anything to be machine stable here
@@ -103,11 +98,10 @@ EOF
 # - directory with results
 
 IGUANA_BUILDIN_CONTROL="/etc/iguana/control.yaml"
-IGUANA_CMDLINE_EXTRA="--newroot=${NEWROOT} ${IGUANA_DEBUG:+--debug --log-level=debug}"
+IGUANA_CMDLINE_EXTRA="--newroot='${NEWROOT}' ${IGUANA_DEBUG:+--debug --log-level=debug}"
 
 if [ -n "$IGUANA_CONTROL_URL" ]; then
-  curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"
-  if [ $? -ne 0 ]; then
+  if ! curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"; then
     Echo "Failed to download provided control file, ignoring"
     sleep 5
   fi
@@ -125,13 +119,13 @@ name: Dynamic containers yaml
 jobs:
 EOH
   N=0
-  for c in "${container_array}"; do
+  for c in "${container_array[@]}"; do
     cat >> /control_containers.yaml << EOF
   job${N}:
     container:
       image: ${c}
 EOF
-  let N=$N+1
+  N=$(( N + 1 ))
   done
   $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA /control_containers.yaml
 # control.yaml is buildin control file in initrd
@@ -141,44 +135,52 @@ fi
 
 Echo "Containers run finished"
 
-# Mount new roots for upcoming switch_root
-if [ -f /iguana/mountlist ]; then
-  cat /iguana/mountlist | while read device mountpoint; do
-    mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
-    if [ "$mountpoint" == "$NEWROOT" ]; then
-      root=$device
+# First if workflow set kernelAction then do that
+if [ -f /iguana/kernelAction ]; then
+  KERNEL_ACTION=$(cat /iguana/kernelAction)
+  iguana_reboot_action "$KERNEL_ACTION"
+fi
+
+# If we are still alive, mount new root for upcoming switch_root
+if [ ! -f /iguana/mountlist ]; then
+  # Call default root detection based on DPS in case workflow did not create it
+  guess_root_mount
+fi
+
+# If we still do not have any mount list our only option is to reboot and hope for the best
+if [ ! -f /iguana/mountlist ]; then
+  Echo "No partitions to boot from detected! Rebooting in 5 seconds"
+  sleep 5
+  iguana_reboot_action "reboot"
+fi
+
+while read device mountpoint; do
+  if [ "$mountpoint" == "$NEWROOT" ]; then
+    root=$device
+    if is_root_encrypted "$device"; then
+      Echo "Encrypted root partition detected, rebooting"
+      iguana_reboot_action "reboot"
     fi
-  done
-fi
-
-[ -f /iguana/kernelAction ] && KERNEL_ACTION=$(cat /iguana/kernelAction)
-
-if [ "$KERNEL_ACTION" == "kexec" ]; then
-  umount -a
-  sync
-  kexec -e
-  Echo "Preloaded kexec failed!"
-fi
+  fi
+  mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
+done < /iguana/mountlist
 
 # TODO: add proper kernel action parsing
 # TODO: this is really naive
 # Scan $NEWROOT for installed kernel, initrd and command line
 # in case installed system has different kernel then the one we are running we need to kexec to new one
 if mount | grep -q "$NEWROOT"; then
-  CUR_KERNEL=$(cat /proc/version | sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p')
-  NEW_KERNEL=$(ls ${NEWROOT}/lib/modules/)
+  CUR_KERNEL=$(sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p' < /proc/version)
+  NEW_KERNEL=$(ls "${NEWROOT}/lib/modules/")
   if [ "$CUR_KERNEL" != "$NEW_KERNEL" ]; then
     Echo "Initrd kernel '${CUR_KERNEL}' is different from installed kernel '${NEW_KERNEL}'. Trying kexec"
     kexec -l "${NEWROOT}/boot/vmlinuz" --initrd="${NEWROOT}/boot/initrd" --reuse-cmdline
     umount -a
     sync
-    kexec -e
-    Echo "Kexec failed, rebooting with correct kernel version in 5s"
-    sleep 5
-    reboot -f
+    iguana_reboot_action "kexec"
   fi
 else
-  Echo "[WARN] New root not mounted!"
+  emergency_shell -n "iguana" "New root not mounted and no reboot requested!"
 fi
 
 [ -n "$PROGRESS_PID" ] && kill $PROGRESS_PID
