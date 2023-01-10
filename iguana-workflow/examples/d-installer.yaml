@@ -6,6 +6,7 @@ jobs:
       image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-web
       volumes:
         - dbus_run:/var/run/dbus
+        - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
     services:
       backend:
         image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-backend
