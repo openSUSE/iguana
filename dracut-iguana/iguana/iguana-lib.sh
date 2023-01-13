@@ -28,13 +28,25 @@ function guess_root_mount() {
   #                 SD_GPT_ROOT_ARM64
   #   amd64/x86_64: 4f68bce3-e8cd-4db1-96e7-fbcaf984b709
   #                 SD_GPT_ROOT_X86_64
-  supported_uuids="b921b045-1df0-41c3-af44-4c6f280d3fae SD_GPT_ROOT_ARM64 4f68bce3-e8cd-4db1-96e7-fbcaf984b709 SD_GPT_ROOT_X86_64"
-  found_root=$(lsblk -o PARTUUID,FSTYPE -n -l -J | jq '.blockdevices | map(select(.partuuid != null)) | .[0].partuuid')
   newroot="$1"
+  supported_uuids=""
+  arch=$(lscpu -J | jq '.lscpu | map(select(.field == "Architecture:")) | .[].data')
+  case "$arch" in
+    x86_64)
+      supported_uuids="4f68bce3-e8cd-4db1-96e7-fbcaf984b709 SD_GPT_ROOT_X86_64"
+      ;;
+    aarch64)
+      supported_uuids="b921b045-1df0-41c3-af44-4c6f280d3fae SD_GPT_ROOT_ARM64"
+      ;;
+  esac
 
-  if echo "$supported_uuids" | grep -q "$found_root"; then
-    # First found partition with UUID is known UUID for root partition.
-    echo "UUID=$found_root $newroot" > /iguana/mountlist
+  # Lookup based on PARTUUID, but return UUID as only that should be unique
+  found_root=$(lsblk -o UUID,PARTUUID,FSTYPE -n -l -J | jq ".blockdevices |
+        map(select(.partuuid != null) | select(.partuuid | ascii_downcase | inside(\"${supported_uuids}\"))) | .[0].uuid")
+
+  uuid_prefix="/dev/disk/by-uuid/"
+  if [ -b "${uuid_prefix}${found_root}" ]; then
+    echo "${uuid_prefix}${found_root} $newroot" > /iguana/mountlist
     return 0
   fi
   return 1
@@ -48,7 +60,7 @@ function is_root_encrypted() {
       iguana_reboot_action "reboot"
   fi
   if echo "$device" | grep -q "^UUID="; then
-      device="/dev/disk/by-partuuid/${device#UUID=}"
+      device="/dev/disk/by-uuid/${device#UUID=}"
   fi
   lsblk -o FSTYPE -n -l "$device" | grep -q "crypto_LUKS" && return 0
   return 1
