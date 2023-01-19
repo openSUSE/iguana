@@ -12,3 +12,4 @@ jobs:
         image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-backend
         volumes:
           - dbus_run:/var/run/dbus
+          - /etc/NetworkManager:/etc/NetworkManager
