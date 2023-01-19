@@ -53,14 +53,17 @@ function guess_root_mount() {
 }
 
 function is_root_encrypted() {
+  local device
   device="$1"
   if [ -z "$device" ]; then
-      Echo "[CRITICAL] is_root_encrypted check: Invalid call: no device passed!"
+      Echo "[CRITICAL] is_root_encrypted check: Invalid call: no device passed! Rebooting in 10s"
       sleep 10
       iguana_reboot_action "reboot"
   fi
   if echo "$device" | grep -q "^UUID="; then
-      device="/dev/disk/by-uuid/${device#UUID=}"
+      local uuid
+      uuid=$(sed -E -e 's/^UUID="?//' -e 's/"$//' <<< "$device")
+      device="/dev/disk/by-uuid/${uuid}"
   fi
   lsblk -o FSTYPE -n -l "$device" | grep -q "crypto_LUKS" && return 0
   return 1
