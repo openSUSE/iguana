@@ -2,6 +2,7 @@
 Fri Jan  6 13:25:44 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Add root partition auto-detection and encrypted root detection
+  (gh#openSUSE/iguana#6)
 
 -------------------------------------------------------------------
 Thu Dec 15 10:18:38 UTC 2022 - Ondrej Holecek <oholecek@suse.com>

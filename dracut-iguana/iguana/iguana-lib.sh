@@ -30,7 +30,7 @@ function guess_root_mount() {
   #                 SD_GPT_ROOT_X86_64
   newroot="$1"
   supported_uuids=""
-  arch=$(lscpu -J | jq '.lscpu | map(select(.field == "Architecture:")) | .[].data')
+  arch=$(LANG=C lscpu -J | jq '.lscpu | map(select(.field == "Architecture:")) | .[].data')
   case "$arch" in
     x86_64)
       supported_uuids="4f68bce3-e8cd-4db1-96e7-fbcaf984b709 SD_GPT_ROOT_X86_64"
