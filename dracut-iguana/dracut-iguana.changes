@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan 26 12:39:11 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Switch to use network-manager instead of wicked
+  (gh#openSUSE/iguana#15)
+
+-------------------------------------------------------------------
 Fri Jan  6 13:25:44 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Add root partition auto-detection and encrypted root detection
