@@ -102,8 +102,13 @@ IGUANA_CMDLINE_EXTRA="--newroot='${NEWROOT}' ${IGUANA_DEBUG:+--debug --log-level
 
 if [ -n "$IGUANA_CONTROL_URL" ]; then
   if ! curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"; then
-    Echo "Failed to download provided control file, ignoring"
-    sleep 5
+    Echo "[ERROR] Failed to download control file ${IGUANA_CONTROL_URL}."
+    if [ -z "$IGUANA_DEBUG" ]; then
+      Echo "Trying to continue without it in 10s"
+      sleep 10
+    else
+      emergency_shell "iguana" "Failed to download control file ${IGUANA_CONTROL_URL}."
+    fi
   fi
 fi
 
