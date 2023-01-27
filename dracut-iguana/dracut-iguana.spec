@@ -28,6 +28,7 @@ BuildRequires:  dracut
 Requires:       NetworkManager
 Requires:       curl
 Requires:       dbus-1
+Requires:       dhcp-client
 Requires:       dracut
 Requires:       grep
 Requires:       iguana-workflow
