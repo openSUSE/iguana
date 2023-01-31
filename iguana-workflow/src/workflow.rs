@@ -17,21 +17,21 @@ pub struct Container {
 }
 
 /// Step
-#[derive(Deserialize)]
-pub struct Step {
-    name: Option<String>,
-    run: String,
-    uses: Option<String>,
-    with: Option<String>,
-    env: Option<HashMap<String, String>>,
-}
+// #[derive(Deserialize)]
+// pub struct Step {
+//     name: Option<String>,
+//     run: String,
+//     uses: Option<String>,
+//     with: Option<String>,
+//     env: Option<HashMap<String, String>>,
+// }
 /// Job
 #[derive(Deserialize)]
 pub struct Job {
     container: Container,
     services: Option<HashMap<String, Container>>,
     needs: Option<Vec<String>>,
-    steps: Option<Vec<Step>>,
+//     steps: Option<Vec<Step>>,
     #[serde(default)]
     continue_on_error: bool,
 }
