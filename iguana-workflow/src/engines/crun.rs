@@ -25,31 +25,31 @@ impl Availability for CRun{
 }
 
 impl ImageOps for CRun {
-    fn clean_image(&self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
-        let skopeo = Skopeo;
+    fn clean_image(&mut self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut skopeo = Skopeo::new();
         return skopeo.clean_image(image, opts)
     }
-    fn prepare_image(&self, image: &str, dry_run: bool) -> Result<(), String> {
-        let skopeo = Skopeo;
+    fn prepare_image(&mut self, image: &str, dry_run: bool) -> Result<(), String> {
+        let mut skopeo = Skopeo::new();
         return skopeo.prepare_image(image, dry_run)
     }
 }
 
 impl VolumeOps for CRun {
-    fn clean_volumes(&self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
-        let local_volumes = LocalVolumes;
+    fn clean_volumes(&mut self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut local_volumes = LocalVolumes::new();
         return local_volumes.clean_volumes(volumes, opts)
     }
 
-    fn prepare_volume(&self, volume_src: &str, opts: &WorkflowOptions) -> Result<(), String> {
-        let local_volumes = LocalVolumes;
+    fn prepare_volume(&mut self, volume_src: &str, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut local_volumes = LocalVolumes::new();
         return local_volumes.prepare_volume(volume_src, opts)
     }
 }
 
 impl ContainerOps for CRun {
     fn run_container(
-        &self,
+        &mut self,
         container: &Container,
         is_service: bool,
         env: HashMap<String, String>,
@@ -58,7 +58,7 @@ impl ContainerOps for CRun {
         Err("Not implemented".to_string())
     }
 
-    fn stop_container(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
+    fn stop_container(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
         Err("Not implemented".to_string())
     }
 }

@@ -34,7 +34,7 @@ fn do_job(
     debug!("Running job {}", name);
     let mut services_ok = true;
 
-    let engine = get_engine().unwrap();
+    let mut engine = get_engine().unwrap();
     // Prepare and run services
     match &job.services {
         Some(services) => {
@@ -99,7 +99,7 @@ fn do_job(
 }
 
 fn clean_job(job: &Job, opts: &WorkflowOptions) -> Result<(), String> {
-    let engine = get_engine().unwrap();
+    let mut engine = get_engine().unwrap();
     // Collect volumes through cleanup so we can removed them at the end
     let mut volumes = HashSet::new();
     // Stop service containers

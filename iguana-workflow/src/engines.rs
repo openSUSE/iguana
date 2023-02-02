@@ -16,23 +16,23 @@ pub trait Availability {
 }
 
 pub trait ImageOps {
-    fn prepare_image(&self, image: &str, dry_run: bool) -> Result<(), String>;
-    fn clean_image(&self, image: &str, opts: &WorkflowOptions) -> Result<(), String>;
+    fn prepare_image(&mut self, image: &str, dry_run: bool) -> Result<(), String>;
+    fn clean_image(&mut self, image: &str, opts: &WorkflowOptions) -> Result<(), String>;
 }
 
 pub trait VolumeOps {
-    fn prepare_volume(&self, volume_src: &str, opts: &WorkflowOptions) -> Result<(), String>;
-    fn clean_volumes(&self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String>;
+    fn prepare_volume(&mut self, volume_src: &str, opts: &WorkflowOptions) -> Result<(), String>;
+    fn clean_volumes(&mut self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String>;
 }
 pub trait ContainerOps {
     fn run_container(
-        &self,
+        &mut self,
         container: &Container,
         is_service: bool,
         env: HashMap<String, String>,
         opts: &WorkflowOptions,
     ) -> Result<(), String>;
-    fn stop_container(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String>;
+    fn stop_container(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String>;
 }
 
 pub trait ContainerEngine: ImageOps + VolumeOps + ContainerOps {}

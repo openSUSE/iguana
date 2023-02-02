@@ -21,7 +21,7 @@ impl Availability for Podman{
 }
 
 impl ImageOps for Podman {
-    fn prepare_image(&self, image: &str, dry_run: bool) -> Result<(), String> {
+    fn prepare_image(&mut self, image: &str, dry_run: bool) -> Result<(), String> {
         let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["image", "pull", "--tls-verify=false", "--", image]);
 
@@ -35,7 +35,7 @@ impl ImageOps for Podman {
     }
 
     /// Clean container images
-    fn clean_image(&self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
+    fn clean_image(&mut self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
         if opts.debug {
             debug!("Not cleaning job image {image} because of debug option");
             return Ok(());
@@ -54,7 +54,7 @@ impl ImageOps for Podman {
 }
 
 impl VolumeOps for Podman {
-    fn prepare_volume(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
+    fn prepare_volume(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
         let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["volume", "exists", name]);
         debug!("{cmd:?}");
@@ -82,7 +82,7 @@ impl VolumeOps for Podman {
         Ok(())
     }
 
-    fn clean_volumes(&self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
+    fn clean_volumes(&mut self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
         let mut podman = Command::new(PODMAN_BIN);
         let mut cmd = podman.args(["volume", "remove"]);
         cmd = cmd.args(volumes);
@@ -98,7 +98,7 @@ impl VolumeOps for Podman {
 
 impl ContainerOps for Podman {
     fn run_container(
-        &self,
+        &mut self,
         container: &Container,
         is_service: bool,
         env: HashMap<String, String>,
@@ -168,7 +168,7 @@ impl ContainerOps for Podman {
         Ok(())
     }
 
-    fn stop_container(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
+    fn stop_container(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
         let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["container", "stop", "--ignore", "--", name]);
         debug!("{cmd:?}");
