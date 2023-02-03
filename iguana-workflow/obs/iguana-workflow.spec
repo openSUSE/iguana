@@ -19,13 +19,17 @@
 Name:           iguana-workflow
 Version:        0.0.0
 Release:        0
-Summary:        Iguana initrd workflow parser and executor
+Summary:        Iguana workflow parser and executor
 License:        GPL-2.0-only
 URL:            https://github.com/openSUSE/iguana
 Source0:        %{name}-%{version}.tar.xz
 Source1:        vendor.tar.xz
 Source2:        cargo_config
 BuildRequires:  cargo-packaging
+%if 0%{?is_opensuse}
+Requires:       crun
+%endif
+Requires:       podman
 
 %description
 An iguana workflow, inspired by GitHub workflow, parser and executor. Part of the iguana initrd.
@@ -49,4 +53,3 @@ cp %{SOURCE2} .cargo/config
 %{_bindir}/iguana-workflow
 
 %changelog
-

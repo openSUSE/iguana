@@ -1,16 +1,28 @@
 use log::debug;
 /// Podman container engine
 use std::collections::{HashMap, HashSet};
+use std::path::Path;
 use std::process::Command;
 
-use crate::engines::{ContainerOps, ImageOps, VolumeOps};
+use super::{Availability, ContainerOps, ImageOps, VolumeOps};
 use crate::workflow::{Container, WorkflowOptions};
 
 pub struct Podman;
 
+const PODMAN_BIN: &str = "/usr/bin/podman";
+
+impl Availability for Podman{
+    fn is_available() -> Result<(), ()> {
+        if Path::is_file(Path::new(PODMAN_BIN)) {
+            return Ok(())
+        };
+        return Err(())
+    }
+}
+
 impl ImageOps for Podman {
-    fn prepare_image(&self, image: &str, dry_run: bool) -> Result<(), String> {
-        let mut podman = Command::new("podman");
+    fn prepare_image(&mut self, image: &str, dry_run: bool) -> Result<(), String> {
+        let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["image", "pull", "--tls-verify=false", "--", image]);
 
         debug!("{cmd:?}");
@@ -23,13 +35,13 @@ impl ImageOps for Podman {
     }
 
     /// Clean container images
-    fn clean_image(&self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
+    fn clean_image(&mut self, image: &str, opts: &WorkflowOptions) -> Result<(), String> {
         if opts.debug {
             debug!("Not cleaning job image {image} because of debug option");
             return Ok(());
         }
 
-        let mut podman = Command::new("podman");
+        let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["image", "rm", "--force", "--", image]);
         debug!("{cmd:?}");
         if !opts.dry_run {
@@ -42,8 +54,8 @@ impl ImageOps for Podman {
 }
 
 impl VolumeOps for Podman {
-    fn prepare_volume(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
-        let mut podman = Command::new("podman");
+    fn prepare_volume(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["volume", "exists", name]);
         debug!("{cmd:?}");
         if !opts.dry_run {
@@ -59,7 +71,7 @@ impl VolumeOps for Podman {
             }
         }
 
-        let mut podman = Command::new("podman");
+        let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["volume", "create", name]);
         debug!("{cmd:?}");
         if !opts.dry_run {
@@ -70,8 +82,8 @@ impl VolumeOps for Podman {
         Ok(())
     }
 
-    fn clean_volumes(&self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
-        let mut podman = Command::new("podman");
+    fn clean_volumes(&mut self, volumes: &HashSet<&str>, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut podman = Command::new(PODMAN_BIN);
         let mut cmd = podman.args(["volume", "remove"]);
         cmd = cmd.args(volumes);
         debug!("{cmd:?}");
@@ -86,7 +98,7 @@ impl VolumeOps for Podman {
 
 impl ContainerOps for Podman {
     fn run_container(
-        &self,
+        &mut self,
         container: &Container,
         is_service: bool,
         env: HashMap<String, String>,
@@ -98,16 +110,17 @@ impl ContainerOps for Podman {
             for v in container.volumes.as_ref().unwrap() {
                 let src = v.split(":").take(1).collect::<Vec<_>>()[0];
                 match self.prepare_volume(src, opts) {
-                    Ok(()) => {}
+                    Ok(()) => {
+                        volumes.push(format!("--volume={v}"));
+                    }
                     Err(e) => {
                         return Err(e);
                     }
                 }
-                volumes.push(format!("--volume={v}"));
             }
         }
         // Run the container
-        let mut podman = Command::new("podman");
+        let mut podman = Command::new(PODMAN_BIN);
         let mut cmd = podman.args([
             "run",
             "--network=host",
@@ -115,6 +128,11 @@ impl ContainerOps for Podman {
             "--env=iguana=true",
             "--mount=type=bind,source=/iguana,target=/iguana",
         ]);
+
+        // Use crun runtime via podman when available
+        if Path::is_file(Path::new("/usr/bin/crun")) {
+            cmd = cmd.arg("--runtime /usr/bin/crun");
+        }
 
         if opts.privileged {
             cmd = cmd.args(["--volume=/dev:/dev", "--privileged"]);
@@ -149,8 +167,8 @@ impl ContainerOps for Podman {
         Ok(())
     }
 
-    fn stop_container(&self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
-        let mut podman = Command::new("podman");
+    fn stop_container(&mut self, name: &str, opts: &WorkflowOptions) -> Result<(), String> {
+        let mut podman = Command::new(PODMAN_BIN);
         let cmd = podman.args(["container", "stop", "--ignore", "--", name]);
         debug!("{cmd:?}");
         if !opts.dry_run {

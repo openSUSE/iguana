@@ -4,10 +4,8 @@ use std::collections::{HashMap, HashSet};
 use linked_hash_map::LinkedHashMap;
 use log::{debug, error, warn};
 
-use crate::engines::{ContainerOps, ImageOps, VolumeOps};
+use crate::engines::get_engine;
 use crate::workflow::{Job, WorkflowOptions};
-
-use crate::engines::podman::Podman;
 
 /// Available results of container run
 #[derive(PartialEq)]
@@ -36,7 +34,7 @@ fn do_job(
     debug!("Running job {}", name);
     let mut services_ok = true;
 
-    let engine = Podman;
+    let mut engine = get_engine().unwrap();
     // Prepare and run services
     match &job.services {
         Some(services) => {
@@ -101,7 +99,7 @@ fn do_job(
 }
 
 fn clean_job(job: &Job, opts: &WorkflowOptions) -> Result<(), String> {
-    let engine = Podman;
+    let mut engine = get_engine().unwrap();
     // Collect volumes through cleanup so we can removed them at the end
     let mut volumes = HashSet::new();
     // Stop service containers
