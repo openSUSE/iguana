@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::process::Command;
 
-use super::{Availability, ContainerOps, ImageOps, VolumeOps, CRun};
+use super::{Availability, ContainerOps, ImageOps, VolumeOps};
 use crate::workflow::{Container, WorkflowOptions};
 
 pub struct Podman;
@@ -130,8 +130,7 @@ impl ContainerOps for Podman {
         ]);
 
         // Use crun runtime via podman when available
-        if CRun::is_available().is_ok() {
-            
+        if Path::is_file(Path::new("/usr/bin/crun")) {
             cmd = cmd.arg("--runtime /usr/bin/crun");
         }
 
