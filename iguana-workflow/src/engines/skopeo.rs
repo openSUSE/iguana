@@ -8,7 +8,7 @@ use std::process::Command;
 use super::{ImageOps, Availability};
 use crate::workflow::WorkflowOptions;
 
-const STORAGE_PATH: &str = "oci:/var/lib/containers/storage";
+const STORAGE_PATH: &str = "/var/lib/containers/storage";
 const SKOPEO_BIN: &str = "/usr/bin/skopeo";
 
 fn create_hash(msg: &str) -> u64 {
@@ -57,8 +57,14 @@ impl ImageOps for Skopeo{
 
         // Use skopeo to copy image from remote registry to local path
         let mut skopeo = Command::new(SKOPEO_BIN);
-        let cmd = skopeo.args(["copy", "--", image,
-            format!("{STORAGE_PATH}/{image_name_hash}").as_str()]);
+        let image_url =  if image.starts_with("docker://") {
+            image.to_string()
+        }
+        else {
+            format!("docker://{image}")
+        };
+        let cmd = skopeo.args(["copy", "--", &image_url,
+            format!("oci:{STORAGE_PATH}/{image_name_hash}").as_str()]);
 
         debug!("{cmd:?}");
         if !dry_run {
