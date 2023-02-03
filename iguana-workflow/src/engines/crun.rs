@@ -1,14 +1,16 @@
+/// CRun container engine implementation
+///
+/// Requires skopeo and local_volumes engines
+
 use log::debug;
-/// crun container engine
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::process::Command;
 
-use super::{Availability, ContainerOps, ImageOps, VolumeOps};
 use crate::workflow::{Container, WorkflowOptions};
 
-use crate::engines::skopeo::Skopeo;
-
+use super::{Availability, ContainerOps, ImageOps, VolumeOps};
+use super::skopeo::Skopeo;
 use super::local_volumes::LocalVolumes;
 
 pub struct CRun;
@@ -17,9 +19,20 @@ const CRUN_BIN: &str = "/usr/bin/crun";
 
 impl Availability for CRun{
     fn is_available() -> Result<(), ()> {
+        debug!("Checking crun availability");
+        if Skopeo::is_available().is_err() {
+            return Err(())
+        };
+
+        if LocalVolumes::is_available().is_err() {
+            return Err(())
+        };
+
         if Path::is_file(Path::new(CRUN_BIN)) {
+            debug!("crun is available");
             return Ok(())
         };
+        debug!("crun binary not available");
         return Err(())
     }
 }

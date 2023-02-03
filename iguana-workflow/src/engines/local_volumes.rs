@@ -35,6 +35,7 @@ impl LocalVolumes {
 
 impl Availability for LocalVolumes{
     fn is_available() -> Result<(), ()> {
+        debug!("Local volumes available");
         return Ok(())
     }
 }

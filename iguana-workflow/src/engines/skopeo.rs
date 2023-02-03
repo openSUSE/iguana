@@ -28,9 +28,12 @@ impl Skopeo {
 
 impl Availability for Skopeo{
     fn is_available() -> Result<(), ()> {
+        debug!("Checking Skopeo availability");
         if Path::is_file(Path::new(SKOPEO_BIN)) {
+            debug!("Skopeo available");
             return Ok(())
         };
+        debug!("Skopeo not available");
         return Err(())
     }
 }

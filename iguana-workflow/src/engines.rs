@@ -39,16 +39,10 @@ pub trait ContainerEngine: ImageOps + VolumeOps + ContainerOps {}
 impl<T: Availability + ImageOps + VolumeOps + ContainerOps> ContainerEngine for T {}
 
 pub fn get_engine() -> Result<Box<dyn ContainerEngine>, String> {
-    let has_skopeo = match Skopeo::is_available() {
-        Ok(()) => true,
-        Err(()) => false
-    };
-
-    // Check both skopeo and crun. We will need skopeo also in future runc standalone support
-    if has_skopeo && CRun::is_available().is_ok() {
+    if CRun::is_available().is_ok() {
         return Ok(Box::new(CRun));
     }
-    // if has_skopeo && Runc::is_avaiable().isok() {
+    // if Runc::is_avaiable().isok() {
     //     return Ok(Box::new(RunC));
     // }
     if Podman::is_available().is_ok() {
