@@ -166,19 +166,23 @@ while read -r device mountpoint options; do
     Echo "Failed to mount ${device} as ${mountpoint} with options {options}"
 done < /iguana/mountlist
 
-# TODO: add proper kernel action parsing
-# TODO: this is really naive
 # Scan $NEWROOT for installed kernel, initrd and command line
 # in case installed system has different kernel then the one we are running we need to kexec to new one
 if mount | grep -q "$NEWROOT"; then
-  CUR_KERNEL=$(sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p' < /proc/version)
-  NEW_KERNEL=$(ls "${NEWROOT}/lib/modules/")
-  if [ "$CUR_KERNEL" != "$NEW_KERNEL" ]; then
-    Echo "Initrd kernel '${CUR_KERNEL}' is different from installed kernel '${NEW_KERNEL}'. Trying kexec"
-    kexec -l "${NEWROOT}/boot/vmlinuz" --initrd="${NEWROOT}/boot/initrd" --reuse-cmdline
-    umount -a
-    sync
-    iguana_reboot_action "kexec"
+  current_kernel=$(sed -n -e 's/^Linux version \([^ ]*\) .*$/\1/p' < /proc/version)
+  if [ -d "${NEWROOT}/usr/lib/modules/${current_kernel}" ] || [ -d "${NEWROOT}/lib/modules/${current_kernel}" ]; then
+    installed_kernels=$(ls "${NEWROOT}/usr/lib/modules/" 2>/dev/null || ls "${NEWROOT}/lib/modules/" 2>/dev/null)
+    Echo -n "Initrd kernel '${current_kernel}' not found in installed kernel(s) '${installed_kernels}'."
+    if [ -f "${NEWROOT}/boot/vmlinuz" ] && [ -f "${NEWROOT}/boot/initrd" ]; then
+      Echo "Trying kexec"
+      kexec -l "${NEWROOT}/boot/vmlinuz" --initrd="${NEWROOT}/boot/initrd" --reuse-cmdline
+      umount -a
+      sync
+      iguana_reboot_action "kexec"
+    else
+      Echo "Rebooting"
+      iguana_reboot_action "reboot"
+    fi
   fi
 else
   emergency_shell -n "iguana" "New root not mounted and no reboot requested!"
