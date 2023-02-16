@@ -154,7 +154,7 @@ if [ ! -f /iguana/mountlist ]; then
   iguana_reboot_action "reboot"
 fi
 
-while read device mountpoint; do
+while read -r device mountpoint options; do
   if [ "$mountpoint" == "$NEWROOT" ]; then
     root=$device
     if is_root_encrypted "$device"; then
@@ -162,7 +162,8 @@ while read device mountpoint; do
       iguana_reboot_action "reboot"
     fi
   fi
-  mount "$device" "$mountpoint" || Echo "Failed to mount ${device} as ${mountpoint}"
+  mount --options "$options" --source "$device" --target "$mountpoint" || \
+    Echo "Failed to mount ${device} as ${mountpoint} with options {options}"
 done < /iguana/mountlist
 
 # TODO: add proper kernel action parsing

@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Feb 16 14:56:22 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Allow options as 3rd option in mountlist (gh#openSUSE/iguana#21)
+
+-------------------------------------------------------------------
 Fri Jan  6 13:25:44 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Add root partition auto-detection and encrypted root detection
