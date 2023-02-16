@@ -163,7 +163,7 @@ while read -r device mountpoint options; do
     fi
   fi
   mount --options "$options" --source "$device" --target "$mountpoint" || \
-    Echo "Failed to mount ${device} as ${mountpoint} with options {options}"
+    Echo "Failed to mount ${device} as ${mountpoint} with options ${options}"
 done < /iguana/mountlist
 
 # Scan $NEWROOT for installed kernel, initrd and command line
