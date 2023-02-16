@@ -1,7 +1,7 @@
 #
 # spec file for package iguana
 #
-# Copyright (c) 2022 SUSE LLC
+# Copyright (c) 2023 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -40,6 +40,9 @@ Initrd for container based, expandable installation and recovery.
 
 %install
 %make_install
+
+%check
+make check DESTDIR=%{buildroot}
 
 %files
 %dir %{_datadir}/iguana

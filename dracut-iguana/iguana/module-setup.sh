@@ -2,7 +2,10 @@
 
 # called by dracut
 check() {
-    return 0
+    require_binaries iguana-workflow || return 1
+
+    #do not add this module by default
+    return 255
 }
 
 # called by dracut
