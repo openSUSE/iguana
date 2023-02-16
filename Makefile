@@ -12,19 +12,20 @@ kernel_file := $(notdir ${kernel_filepath})
 kernel_version := $(subst ${kernel_prefix}-,,${kernel_filepath})
 
 .PHONY: build
-build: ${build_dir} ${target_dir}/iguana-initrd ${target_dir}/${kernel_file}
+build: ${build_dir} ${build_dir}/iguana-initrd ${build_dir}/${kernel_file}
 	@echo "All done"
 
 ${build_dir}:
 	@mkdir ${build_dir}
 
-${target_dir}/iguana-initrd:
+${build_dir}/iguana-initrd:
 	@echo "Generating initrd"
-	dracut --force --no-hostonly --no-hostonly-cmdline \
-	       --no-hostonly-default-device --no-hostonly-i18n \
-		   --reproducible ${build_dir}/iguana-initrd ${kernel_version}
+	dracut --force --no-hostonly --no-hostonly-cmdline      \
+			--no-hostonly-default-device --no-hostonly-i18n \
+			--no-machineid --reproducible --add iguana      \
+			${build_dir}/iguana-initrd ${kernel_version}
 
-${target_dir}/${kernel_file}:
+${build_dir}/${kernel_file}:
 	@echo "Collecting kernel used for initrd build"
 	@cp ${kernel_filepath} ${build_dir}/${kernel_file}
 
@@ -35,6 +36,9 @@ install:
 	done
 
 all: build install
+
+check:
+	lsinitrd -m ${target_dir}/iguana-initrd | grep -q iguana
 
 clean:
 	rm -r ${build_dir}
