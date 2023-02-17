@@ -50,7 +50,7 @@ install() {
     inst_multiple lsblk jq
 
     # standard iguana
-    inst_simple iguana-workflow
+    inst iguana-workflow
 
     #TODO
     #install SUSE CA as a trust anchor
