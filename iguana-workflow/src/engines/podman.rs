@@ -97,10 +97,13 @@ impl ContainerOps for Podman {
         if container.volumes.is_some() {
             for v in container.volumes.as_ref().unwrap() {
                 let src = v.split(":").take(1).collect::<Vec<_>>()[0];
-                match self.prepare_volume(src, opts) {
-                    Ok(()) => {}
-                    Err(e) => {
-                        return Err(e);
+                if !src.starts_with("/") {
+                    // Volume is named volume, prepare it in advance
+                    match self.prepare_volume(src, opts) {
+                        Ok(_) => {}
+                        Err(e) => {
+                            return Err(e);
+                        }
                     }
                 }
                 volumes.push(format!("--volume={v}"));
