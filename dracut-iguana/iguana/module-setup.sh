@@ -10,7 +10,7 @@ check() {
 
 # called by dracut
 depends() {
-    echo network
+    echo network network-manager
     return 0
 }
 

@@ -1,7 +1,7 @@
 #
 # spec file for package dracut-iguana
 #
-# Copyright (c) 2022 SUSE LLC
+# Copyright (c) 2023 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -25,16 +25,17 @@ Group:          System/Packages
 URL:            https://github.com/openSUSE/iguana
 Source:         %{name}-%{version}.tar
 BuildRequires:  dracut
+Requires:       NetworkManager
 Requires:       curl
+Requires:       dbus-1
 Requires:       dracut
 Requires:       grep
 Requires:       iguana-workflow
 Requires:       iproute2
+Requires:       jq
 Requires:       kexec-tools
 Requires:       podman
 Requires:       procps
-Requires:       wicked
-Requires:       jq
 BuildArch:      noarch
 
 %description

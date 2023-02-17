@@ -2,6 +2,8 @@
 Thu Feb 16 14:56:22 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Allow options as 3rd option in mountlist (gh#openSUSE/iguana#21)
+- Switch to use network-manager instead of network-legacy
+  (gh#openSUSE/iguana#15)
 
 -------------------------------------------------------------------
 Fri Jan  6 13:25:44 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
