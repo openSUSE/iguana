@@ -19,6 +19,12 @@ rebuild_master:
     - trigger_services:
         project: home:oholecek:iguana
         package: dracut-iguana
+    - trigger_services:
+        project: home:oholecek:iguana
+        package: iguana-workflow
+    - trigger_services:
+        project: home:oholecek:iguana
+        package: iguana
   filters:
     event: push
     branches:
