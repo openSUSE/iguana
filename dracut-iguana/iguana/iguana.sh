@@ -43,7 +43,7 @@ echo -n > /iguana/dc_progress
 bash -c 'tail -f /iguana/dc_progress | while true ; do read msg ; echo "$msg" > /iguana/progress ; done' &
 DC_PROGRESS_PID=$!
 
-Echo "Preparing Iguana boot environment"
+Echo "Starting Iguana boot environment"
 
 if [ -n "$EXISTING_ROOT" ] && mount "$EXISTING_ROOT" "$NEWROOT"; then
   # We have already existing root, mount it and copy persistent data
@@ -91,24 +91,32 @@ size = ""
 EOF
 
 # what we need:
-# - registry (hardcode registry.suse.com?, take from control file? opensuse will want registry.opensuse.org. Others would want different
+# - registry (hardcode registry.suse.com?, take from workflow file? opensuse will want registry.opensuse.org. Others would want different
 # - image name
 # - how to start the image:
 #   - bind mounts, volumes, priviledged, ports published
 # - directory with results
 
-IGUANA_BUILDIN_CONTROL="/etc/iguana/control.yaml"
-IGUANA_CMDLINE_EXTRA="--newroot='${NEWROOT}' ${IGUANA_DEBUG:+--debug --log-level=debug}"
+IGUANA_BUILDIN_WORKFLOW="/etc/iguana/control.yaml"
+IGUANA_URL_WORKFLOW="/tmp/control_url.yaml"
+IGUANA_CMDLINE_EXTRA=(--newroot="${NEWROOT}" ${IGUANA_DEBUG:+--debug --log-level=debug})
 
 if [ -n "$IGUANA_CONTROL_URL" ]; then
-  if ! curl --insecure -o control_url.yaml -L -- "$IGUANA_CONTROL_URL"; then
-    Echo "Failed to download provided control file, ignoring"
-    sleep 5
+  if [ "${IGUANA_CONTROL_URL:0:1}" == "/" ]; then
+    if [ -f "$IGUANA_CONTROL_URL" ]; then
+      cp "$IGUANA_CONTROL_URL" "$IGUANA_URL_WORKFLOW"
+    else
+      Echo "ERROR: Workflow control file ${IGUANA_CONTROL_URL} not found!"
+      sleep 10
+    fi
+  elif ! curl --insecure -o "$IGUANA_URL_WORKFLOW" -L -- "$IGUANA_CONTROL_URL"; then
+    Echo "ERROR: Failed to download provided control file! (${IGUANA_CONTROL_URL})"
+    sleep 10
   fi
 fi
 
 if [ -f control_url.yaml ]; then
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA control_url.yaml
+  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$IGUANA_URL_WORKFLOW"
 elif [ -n "$IGUANA_CONTAINERS" ]; then
   Echo "Using container list from kcmdline: ${IGUANA_CONTAINERS}"
   readarray -d , -t container_array <<< "$IGUANA_CONTAINERS"
@@ -127,10 +135,10 @@ EOH
 EOF
   N=$(( N + 1 ))
   done
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA /control_containers.yaml
+  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" /control_containers.yaml
 # control.yaml is buildin control file in initrd
-elif [ -f "$IGUANA_BUILDIN_CONTROL" ]; then
-  $IGUANA_WORKFLOW $IGUANA_CMDLINE_EXTRA "$IGUANA_BUILDIN_CONTROL"
+elif [ -f "$IGUANA_BUILDIN_WORKFLOW" ]; then
+  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$IGUANA_BUILDIN_WORKFLOW"
 fi
 
 Echo "Containers run finished"
@@ -162,7 +170,7 @@ while read -r device mountpoint options; do
       iguana_reboot_action "reboot"
     fi
   fi
-  mount --options "$options" --source "$device" --target "$mountpoint" || \
+  mount --options "$options" --source "$device" --target "$mountpoint" ||
     Echo "Failed to mount ${device} as ${mountpoint} with options ${options}"
 done < /iguana/mountlist
 
