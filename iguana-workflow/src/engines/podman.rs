@@ -1,6 +1,8 @@
 use log::debug;
 /// Podman container engine
 use std::collections::{HashMap, HashSet};
+use std::fs;
+use std::path::Path;
 use std::process::Command;
 
 use crate::engines::{ContainerOps, ImageOps, VolumeOps};
@@ -97,7 +99,18 @@ impl ContainerOps for Podman {
         if container.volumes.is_some() {
             for v in container.volumes.as_ref().unwrap() {
                 let src = v.split(":").take(1).collect::<Vec<_>>()[0];
-                if !src.starts_with("/") {
+                if src.starts_with("/") {
+                    // Volume is local directory, check if exists and create if not
+                    if !Path::is_dir(Path::new(&src)) {
+                        match fs::create_dir_all(&src) {
+                            Ok(_) => {}
+                            Err(e) => {
+                                return Err(e.to_string());
+                            }
+                        }
+                    }
+                }
+                else {
                     // Volume is named volume, prepare it in advance
                     match self.prepare_volume(src, opts) {
                         Ok(_) => {}
