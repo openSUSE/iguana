@@ -115,7 +115,7 @@ if [ -n "$IGUANA_CONTROL_URL" ]; then
   fi
 fi
 
-if [ -f control_url.yaml ]; then
+if [ -f "$IGUANA_URL_WORKFLOW" ]; then
   $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$IGUANA_URL_WORKFLOW"
 elif [ -n "$IGUANA_CONTAINERS" ]; then
   Echo "Using container list from kcmdline: ${IGUANA_CONTAINERS}"
