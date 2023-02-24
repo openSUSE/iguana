@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Fri Feb 24 10:32:21 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
-- Auto create directories for volumes if they do not exists
+- Auto create directories for volumes if they do not exist
   (gh#openSUSE/iguana#18)
 
 -------------------------------------------------------------------

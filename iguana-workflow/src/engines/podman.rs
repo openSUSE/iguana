@@ -101,9 +101,9 @@ impl ContainerOps for Podman {
                 let src = v.split(":").take(1).collect::<Vec<_>>()[0];
                 if src.starts_with("/") {
                     // Volume is local directory, check if exists and create if not
-                    debug!("Volume {} is a local file/directory.", src);
+                    debug!("Volume {} is a local file or directory", src);
                     if !Path::exists(Path::new(&src)) {
-                        debug!("Local volume {} does not exists, creating it as directory.", src);
+                        debug!("Local volume {} does not exists, creating it as directory", src);
                         match fs::create_dir_all(&src) {
                             Ok(_) => {}
                             Err(e) => {
