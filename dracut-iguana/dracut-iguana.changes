@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Feb 24 14:15:37 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Allow to specify local path as control_url pointing to workflow
+  files bundled with iguana initrd (gh#openSUSE/iguana#2)
+
+-------------------------------------------------------------------
 Thu Feb 16 14:56:22 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Allow options as 3rd option in mountlist (gh#openSUSE/iguana#21)
