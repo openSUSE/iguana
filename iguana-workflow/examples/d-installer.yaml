@@ -5,9 +5,12 @@ jobs:
     container:
       image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-web
       volumes:
-        - dbus_run:/var/run/dbus
+        - dbus_run:/run/d-installer
+        - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
     services:
       backend:
         image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-backend
         volumes:
-          - dbus_run:/var/run/dbus
+          - dbus_run:/run/d-installer
+          - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+          - /etc/NetworkManager:/etc/NetworkManager
