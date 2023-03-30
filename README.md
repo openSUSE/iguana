@@ -36,7 +36,7 @@ Iguana understands three kernel command line options which are used for influenc
 - rd.iguana.containers <container_image>, ...
     Use to manually set what container(s) to run. This will make Iguana to pull and start containers.
 - rd.iguana.control_url
-    Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md) on some URL. For example running containerized d-installer use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/d-installer.yaml`
+    Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md) on some URL. For example running containerized Agama use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/agama.yaml`
 - rd.iguana.debug
     Set to 1 to enable verbose logging
 

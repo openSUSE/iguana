@@ -14,7 +14,7 @@ Unstable software, use at your own risk.
   This will generate `iguana-initrd` file in your current directory.
 
 4) Use new VM and boot directly to kernel and `iguana-initrd` created in previous steps.
-5) To test with dinstaller, use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/d-installer.yaml rd.iguana.debug=1` as kernel command line
+5) To test with Agama, use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/agama.yaml rd.iguana.debug=1` as kernel command line
 
 ### Submit to OBS
 

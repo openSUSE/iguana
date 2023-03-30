@@ -1,16 +1,16 @@
 name: Test installation control YAML
 
 jobs:
-  dinstaller:
+  agama:
     container:
-      image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-web
+      image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-web
       volumes:
         - dbus_run:/var/run/dbus
       env:
         TEST: test_env
     services:
       backend:
-        image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/dinstaller-backend
+        image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-service
         volumes:
           - dbus_run:/var/run/dbus
         env:
@@ -19,7 +19,7 @@ jobs:
     container:
       image: registry.opensuse.org/opensuse/busybox:latest
     needs:
-      - dinstaller
+      - agama
     steps:
       - run: /bin/bash
 env:
