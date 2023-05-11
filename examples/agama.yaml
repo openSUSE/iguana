@@ -1,16 +1,17 @@
-name: Agama workflow
+name: Agama
+description: Workflow utilizing Agama installer
 
 jobs:
   agama:
     container:
-      image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-web
+      image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-service
       volumes:
         - dbus_run:/run/agama
         - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+        - /etc/NetworkManager:/etc/NetworkManager
     services:
       backend:
-        image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-service
+        image: registry.opensuse.org/yast/head/containers/containers_tumbleweed/opensuse/agama-web
         volumes:
           - dbus_run:/run/agama
           - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
-          - /etc/NetworkManager:/etc/NetworkManager
