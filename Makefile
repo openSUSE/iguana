@@ -20,10 +20,8 @@ ${build_dir}:
 
 ${build_dir}/iguana-initrd:
 	@echo "Generating initrd"
-	dracut --force --no-hostonly --no-hostonly-cmdline      \
-			--no-hostonly-default-device --no-hostonly-i18n \
-			--no-machineid --reproducible --add iguana      \
-			${build_dir}/iguana-initrd ${kernel_version}
+	dracut --force -c dracut.conf.d/iguana.conf \
+		${build_dir}/iguana-initrd ${kernel_version}
 
 ${build_dir}/${kernel_file}:
 	@echo "Collecting kernel used for initrd build"
