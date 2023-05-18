@@ -27,6 +27,14 @@ BuildRequires:  dracut-iguana
 BuildRequires:  iguana-workflow
 BuildRequires:  kernel-default
 BuildRequires:  make
+BuildRequires:  plymouth
+BuildRequires:  plymouth-dracut
+BuildRequires:  plymouth-plugin-label-ft
+%if 0%{?is_opensuse}
+BuildRequires:  plymouth-branding-openSUSE
+%else
+BuildRequires:  plymouth-branding-SLE
+%endif
 
 %description
 
