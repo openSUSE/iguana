@@ -23,7 +23,7 @@ cargo build --release
 
 ### Submit to OBS
 
-[osc](https://openbuildservice.org/help/manuals/obs-user-guide/art.obs.bg.html#sec.obsbg.req) tool is required for submitting to the [OBS project](https://build.opensuse.org/package/show/home:oholecek:iguana/iguana-workflow)
+[osc](https://openbuildservice.org/help/manuals/obs-user-guide/art.obs.bg.html#sec.obsbg.req) tool is required for submitting to the [OBS project](https://build.opensuse.org/package/show/systemsmanagement:Iguana:Devel/iguana-workflow)
 
 Project is configured to follow [iguana-workflow GitHub repo](https://github.com/openSUSE/iguana). For contributions please create pull requests.
 
@@ -31,7 +31,7 @@ Follow this guide if you want to create your own testing package.
 
 1) checkout package to your project space
 
-    `osc bco home:oholecek iguana-workflow`
+    `osc bco systemsmanagement:Iguana:Devel iguana-workflow`
 
 2) in checked out project, edit `_service` file and change `url` parameter to follow your git repository
 
@@ -49,7 +49,6 @@ Follow this guide if you want to create your own testing package.
     `osc ci`
 
 If you are maintainer updating package in OBS, skip step 2)
-
 
 
 ## Testing

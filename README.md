@@ -12,11 +12,11 @@ Iguana is split in multiple packages:
 - Iguana orchestrator [iguana-workflow](https://github.com/openSUSE/iguana/tree/main/iguana-workflow)
 - This overall project
 
-Packages are available for openSUSE systems at [OBS](https://build.opensuse.org):
+Devel packages are available at [OBS project](https://build.opensuse.org/project/show/systemsmanagement:Iguana:Devel):
 
-- [dracut-iguana](https://build.opensuse.org/package/show/home:oholecek:iguana/dracut-iguana)
-- [iguana-workflow](https://build.opensuse.org/package/show/home:oholecek:iguana/iguana-workflow)
-- [iguana initrd](https://build.opensuse.org/package/show/home:oholecek:iguana/iguana)
+- [dracut-iguana](https://build.opensuse.org/package/show/systemsmanagement:Iguana:Devel/dracut-iguana)
+- [iguana-workflow](https://build.opensuse.org/package/show/systemsmanagement:Iguana:Devel/iguana-workflow)
+- [iguana initrd](https://build.opensuse.org/package/show/systemsmanagement:Iguana:Devel/iguana)
 
 ## Testing iguana
 
@@ -36,7 +36,7 @@ Iguana understands three kernel command line options which are used for influenc
 - rd.iguana.containers <container_image>, ...
     Use to manually set what container(s) to run. This will make Iguana to pull and start containers.
 - rd.iguana.control_url
-    Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md) on some URL. For example running containerized Agama use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/iguana-workflow/examples/agama.yaml`
+    Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md). For example running containerized Agama use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/examples/agama.yaml`
 - rd.iguana.debug
     Set to 1 to enable verbose logging
 
@@ -49,10 +49,10 @@ Every container started by iguana is running in **privileged** mode with host ne
 ### Expectations and provides
 
 - Machine ID is provided in `/iguana/machine-id` file.
-- Iguana **expects** `/iguana/mountlist` file after last container is finished. Each line contains device and mountpoint and Iguana will mount all mounts in order specified.
+- Iguana **expects** `/iguana/mountlist` file after last container is finished. Each line contains device, mountpoint and optional mount options. Iguana will mount all mounts in order as they are specified in the mountlist file.
 
 ```
-    device mountpoint
+    device mountpoint mount_options
     device2 mountpoint2
     ...
 ```

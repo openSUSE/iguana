@@ -1,29 +1,29 @@
 pr_workflow:
   steps:
     - branch_package:
-        source_project: home:oholecek:iguana
+        source_project: systemsmanagement:Iguana:Devel
         source_package: dracut-iguana
-        target_project: home:oholecek:iguana:PRs
+        target_project: systemsmanagement:Iguana:Devel
     - branch_package:
-        source_project: home:oholecek:iguana
+        source_project: systemsmanagement:Iguana:Devel
         source_package: iguana-workflow
-        target_project: home:oholecek:iguana:PRs
+        target_project: systemsmanagement:Iguana:Devel
     - branch_package:
-        source_project: home:oholecek:iguana
+        source_project: systemsmanagement:Iguana:Devel
         source_package: iguana
-        target_project: home:oholecek:iguana:PRs
+        target_project: systemsmanagement:Iguana:Devel
   filters:
     event: pull_request
 rebuild_master:
   steps:
     - trigger_services:
-        project: home:oholecek:iguana
+        project: systemsmanagement:Iguana:Devel
         package: dracut-iguana
     - trigger_services:
-        project: home:oholecek:iguana
+        project: systemsmanagement:Iguana:Devel
         package: iguana-workflow
     - trigger_services:
-        project: home:oholecek:iguana
+        project: systemsmanagement:Iguana:Devel
         package: iguana
   filters:
     event: push
