@@ -9,7 +9,7 @@ fi
 
 if [ -n "$IGUANA_DEBUG" ]; then
   echo "export PS1='iguana@\h:\w> '" > /root/.bashrc
-  setsid sh -c 'exec /bin/bash </dev/tty2 >/dev/tty2 2>&1'
+  setsid -f -- sh -c 'exec /bin/bash </dev/tty2 >/dev/tty2 2>&1'
 fi
 
 function iguana_reboot_action() {
