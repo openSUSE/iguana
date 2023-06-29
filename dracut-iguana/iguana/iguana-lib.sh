@@ -8,8 +8,8 @@ if ! declare -f Echo > /dev/null ; then
 fi
 
 if [ -n "$IGUANA_DEBUG" ]; then
-  export PS1="iguana@\h:\w> "
-  setsid sh -c 'exec /bin/bash </dev/tty1 >/dev/tty1 2>&1'
+  echo "export PS1='iguana@\h:\w> '" > /root/.bashrc
+  setsid sh -c 'exec /bin/bash </dev/tty2 >/dev/tty2 2>&1'
 fi
 
 function iguana_reboot_action() {
