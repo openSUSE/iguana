@@ -7,6 +7,11 @@ if ! declare -f Echo > /dev/null ; then
   }
 fi
 
+if [ -n "$IGUANA_DEBUG" ]; then
+  export PS1="iguana@\h:\w> "
+  setsid sh -c 'exec /bin/bash </dev/tty1 >/dev/tty1 2>&1'
+fi
+
 function iguana_reboot_action() {
   # Always do reboot, only in case of kexec action try kexec first
   # Kexec must be already prepared
