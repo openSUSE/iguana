@@ -22,7 +22,12 @@ function iguana_reboot_action() {
     Echo "Kexec failed, trying reboot"
     sleep 5
   fi
-  reboot -f -d -n
+  if [ "unless-debug" == "$2" ] && [ -n "$IGUANA_DEBUG" ]; then
+    Echo "Debug mode enabled, dropping to emergency shell instead of reboot"
+    emergency_shell -n "iguana"
+  else
+    reboot -f -d -n
+  fi
 }
 
 function guess_root_mount() {
