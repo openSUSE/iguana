@@ -159,7 +159,7 @@ fi
 if [ ! -f /iguana/mountlist ]; then
   Echo "No partitions to boot from detected! Rebooting in 5 seconds"
   sleep 5
-  iguana_reboot_action "reboot"
+  iguana_reboot_action "reboot" "unless-debug"
 fi
 
 while read -r device mountpoint options; do
