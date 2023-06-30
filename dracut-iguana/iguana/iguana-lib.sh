@@ -8,6 +8,7 @@ if ! declare -f Echo > /dev/null ; then
 fi
 
 if [ -n "$IGUANA_DEBUG" ]; then
+  Echo "Debug mode - starting secondary tty2"
   echo "export PS1='iguana@\h:\w> '" > /root/.bashrc
   setsid -f -- sh -c 'exec /bin/bash </dev/tty2 >/dev/tty2 2>&1'
 fi
@@ -23,7 +24,7 @@ function iguana_reboot_action() {
     sleep 5
   fi
   if [ "unless-debug" == "$2" ] && [ -n "$IGUANA_DEBUG" ]; then
-    Echo "Debug mode enabled, dropping to emergency shell instead of reboot"
+    Echo "Debug mode - dropping to emergency shell instead of reboot"
     emergency_shell -n "iguana"
   else
     reboot -f -d -n
