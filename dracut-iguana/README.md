@@ -5,6 +5,27 @@ _part of [Iguana installer research project](https://github.com/openSUSE/iguana)
 
 Unstable software, use at your own risk.
 
+## Configuration options:
+
+Iguana dracut modules is using `rd.iguana` namespace and following options are recognized.
+
+### rd.iguana.control_url
+
+URL or local path to the [Iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md). Iguana module will try to download file from provided location and then pass it to the iguana-workflow.
+
+### rd.iguana.containers
+
+Provide container image directly instead of using workflow file. Registry must be included in the URL. More containers can be specified, delimited by `,`.
+
+### rd.iguana.debug
+
+Starts iguana debug mode:
+
+* Enables verbose logging for iguana dracut module.
+* Do not remove containers after their run
+* Instead of rebooting on failure drop to the emergency shell
+* Starts debug console on tty2
+
 ## How to test
 
 1) have an existing VM. Do not use your own machine!

@@ -38,7 +38,9 @@ Iguana understands three kernel command line options which are used for influenc
 - rd.iguana.control_url
     Use to point Iguana to [iguana workflow file](https://github.com/openSUSE/iguana/blob/main/iguana-workflow/Workflow.md). For example running containerized Agama use `rd.iguana.control_url=https://raw.githubusercontent.com/openSUSE/iguana/main/examples/agama.yaml`
 - rd.iguana.debug
-    Set to 1 to enable verbose logging
+    Use to enable debug mode.
+
+For details see [dracut-iguana documentation](https://github.com/openSUSE/iguana/blob/main/dracut-iguana/README.md)
 
 
 ## Writing iguana aware containers
