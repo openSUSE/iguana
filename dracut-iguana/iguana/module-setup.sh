@@ -23,11 +23,11 @@ installkernel() {
 }
 
 get_pkg_deps() {
-    deps=$(rpm -q --requires "$@" | while read req ver; do
+    deps=$(rpm -q --requires "$@" | while read req _; do
         p=$(rpm -q --whatprovides "$req")
         [ $? -eq 0 ] && echo $p
     done | sort -u)
-    echo "$@ $deps"
+    echo "$* $deps"
 }
 
 container_reqs() {
@@ -41,7 +41,7 @@ container_reqs() {
 # called by dracut
 install() {
     # container requires
-    inst_multiple -o $(container_reqs)
+    inst_multiple -o "$(container_reqs)"
 
     inst_multiple grep ldconfig date systemd-machine-id-setup \
                   curl sync tail kexec
@@ -55,12 +55,14 @@ install() {
     #TODO
     #install SUSE CA as a trust anchor
 
-    inst_hook cmdline 91 "$moddir/iguana-root.sh"
-    inst_hook pre-mount 99 "$moddir/iguana.sh"
-    inst_simple "$moddir/iguana-lib.sh" "/lib/dracut-iguana-lib.sh"
-    inst_hook initqueue/timeout 99 "$moddir/iguana-timeout.sh"
+    # shellcheck disable=SC2154
+    inst_hook cmdline 91 "${moddir}/iguana-root.sh"
+    inst_hook pre-mount 99 "${moddir}/iguana.sh"
+    inst_simple "${moddir}/iguana-lib.sh" "/lib/dracut-iguana-lib.sh"
+    inst_hook initqueue/timeout 99 "${moddir}/iguana-timeout.sh"
 
     #TODO: make network requirement optional, e.g. for ISO use
+    # shellcheck disable=SC2154
     echo "rd.neednet=1 rd.auto" > "${initdir}/etc/cmdline.d/50iguana.conf"
 }
 
