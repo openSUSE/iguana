@@ -35,6 +35,7 @@ Requires:       iproute2
 Requires:       jq
 Requires:       kexec-tools
 Requires:       podman
+Requires:       libcontainers-common
 Requires:       procps
 BuildArch:      noarch
 

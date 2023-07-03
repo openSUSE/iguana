@@ -31,7 +31,7 @@ get_pkg_deps() {
 }
 
 container_reqs() {
-    packages=$(get_pkg_deps podman util-linux procps podman-cni-config iptables)
+    packages=$(get_pkg_deps podman libcontainers-common util-linux procps podman-cni-config iptables)
     for p in $packages; do
       rpm -ql $p | grep -E -v "(contains no files)|(/man/)|(/bash-completion/)|(/doc/)" | sed -e 's/\n/ /g'
     done | sort -u
