@@ -33,7 +33,7 @@ get_pkg_deps() {
 container_reqs() {
     packages=$(get_pkg_deps podman util-linux procps podman-cni-config iptables)
     for p in $packages; do
-      rpm -ql $p | grep -E -v "(/man/)|(/bash-completion/)|(/doc/)" | sed -e 's/\n/ /g'
+      rpm -ql $p | grep -E -v "(contains no files)|(/man/)|(/bash-completion/)|(/doc/)" | sed -e 's/\n/ /g'
     done | sort -u
 }
 
@@ -41,7 +41,8 @@ container_reqs() {
 # called by dracut
 install() {
     # container requires
-    inst_multiple -o "$(container_reqs)"
+    # shellcheck disable=SC2046
+    inst_multiple -o $(container_reqs)
 
     inst_multiple grep ldconfig date systemd-machine-id-setup \
                   curl sync tail kexec
