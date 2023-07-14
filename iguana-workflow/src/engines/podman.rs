@@ -98,13 +98,13 @@ impl ContainerOps for Podman {
         let mut volumes = Vec::new();
         if container.volumes.is_some() {
             for v in container.volumes.as_ref().unwrap() {
-                let src = v.split(":").take(1).collect::<Vec<_>>()[0];
-                if src.starts_with("/") {
+                let src = v.split(':').take(1).collect::<Vec<_>>()[0];
+                if src.starts_with('/') {
                     // Volume is local directory, check if exists and create if not
                     debug!("Volume {} is a local file or directory", src);
                     if !Path::exists(Path::new(&src)) {
                         debug!("Local volume {} does not exists, creating it as directory", src);
-                        match fs::create_dir_all(&src) {
+                        match fs::create_dir_all(src) {
                             Ok(_) => {}
                             Err(e) => {
                                 return Err(e.to_string());
