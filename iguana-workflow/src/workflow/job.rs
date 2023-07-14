@@ -19,7 +19,7 @@ pub enum JobStatus {
 }
 
 fn merge_from_ref(map: &mut HashMap<String, String>, map2: &HashMap<String, String>) {
-    map.extend(map2.into_iter().map(|(k, v)| (k.clone(), v.clone())));
+    map.extend(map2.iter().map(|(k, v)| (k.clone(), v.clone())));
 }
 
 fn do_job(
@@ -30,7 +30,7 @@ fn do_job(
 ) -> Result<(), String> {
     let image = &job.container.image;
 
-    if image.len() == 0 {
+    if image.is_empty() {
         return Err(format!("No image specified for job {}", name));
     }
     debug!("Running job {}", name);
@@ -124,7 +124,7 @@ fn clean_job(job: &Job, opts: &WorkflowOptions) -> Result<(), String> {
 
                 if s_container.volumes.is_some() {
                     for v in s_container.volumes.as_ref().unwrap() {
-                        let src = v.split(":").take(1).collect::<Vec<_>>()[0];
+                        let src = v.split(':').take(1).collect::<Vec<_>>()[0];
                         volumes.insert(src);
                     }
                 }
@@ -135,7 +135,7 @@ fn clean_job(job: &Job, opts: &WorkflowOptions) -> Result<(), String> {
 
     if job.container.volumes.is_some() {
         for v in job.container.volumes.as_ref().unwrap() {
-            let src = v.split(":").take(1).collect::<Vec<_>>()[0];
+            let src = v.split(':').take(1).collect::<Vec<_>>()[0];
             volumes.insert(src);
         }
     }
@@ -150,7 +150,7 @@ fn clean_job(job: &Job, opts: &WorkflowOptions) -> Result<(), String> {
     }
 
     // Clean images
-    return engine.clean_image(&job.container.image, opts);
+    engine.clean_image(&job.container.image, opts)
 }
 
 /// Analyze "jobs" key of workflow and execute jobs in order

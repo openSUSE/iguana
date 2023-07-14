@@ -61,7 +61,7 @@ pub fn do_workflow(workflow: String, opts: &WorkflowOptions) -> Result<(), Strin
         }
     };
 
-    info!("Loaded {}", yaml.name.unwrap_or("control file".to_owned()));
+    info!("Loaded {}", yaml.name.unwrap_or_else(|| "control file".to_owned()));
 
     let jobs = yaml.jobs;
 
