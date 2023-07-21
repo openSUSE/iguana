@@ -1,7 +1,7 @@
 #
 # spec file for package iguana-workflow
 #
-# Copyright (c) 2022 SUSE LLC
+# Copyright (c) 2023 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -22,7 +22,7 @@ Release:        0
 Summary:        Iguana initrd workflow parser and executor
 License:        GPL-2.0-only
 URL:            https://github.com/openSUSE/iguana
-Source0:        %{name}-%{version}.tar.xz
+Source0:        %{name}.tar.xz
 Source1:        vendor.tar.xz
 Source2:        cargo_config
 BuildRequires:  cargo-packaging
