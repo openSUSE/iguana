@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Jul 21 16:12:24 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Fixes suggested by cargo-clippy and dependency updates
+  (gh#openSUSE/iguana#38)
+
+-------------------------------------------------------------------
 Fri Feb 24 10:32:21 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Auto create directories for volumes if they do not exist

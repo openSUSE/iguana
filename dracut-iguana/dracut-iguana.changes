@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Jul 21 16:08:01 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Enable console on tty2 when rd.debug or rd.iguana.debug is present
+  (gh#openSUSE/iguana#35)
+- Shellcheck fixes (gh#openSUSE/iguana#36)
+- Install missing podman policies (gh#openSUSE/iguana#37)
+
+-------------------------------------------------------------------
 Fri Feb 24 14:15:37 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
 
 - Allow to specify local path as control_url pointing to workflow
