@@ -3,7 +3,7 @@
 target_dir := ${DESTDIR}/usr/share/iguana
 build_dir := out
 
-kernel_filepath := $(shell find /boot -name 'vmlinuz*' | sort -r -V | head -1)
+kernel_filepath := $(shell find /boot \( -name 'vmlinuz-*' -o -name 'Image-*' \) | sort -r -V | head -1)
 
 file_split := $(subst -, ,${kernel_filepath})
 kernel_prefix := $(word 1, ${file_split})

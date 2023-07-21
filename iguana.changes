@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Jul 21 17:07:03 UTC 2023 - Ondrej Holecek <oholecek@suse.com>
+
+- Fix build for aarch65 by collecting correct kernel file
+  (gh#openSUSE/iguana#40)
+
+-------------------------------------------------------------------
 Mon Aug  8 14:35:03 UTC 2022 - Ondrej Holecek <oholecek@suse.com>
 
 - Initial package 
