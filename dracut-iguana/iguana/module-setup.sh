@@ -10,7 +10,7 @@ check() {
 
 # called by dracut
 depends() {
-    echo network network-manager
+    echo bash network network-manager
     return 0
 }
 
@@ -18,8 +18,7 @@ IPTABLES_MODULES="ip6_tables ip6table_nat ip_tables iptable_filter iptable_nat n
 
 # called by dracut
 installkernel() {
-    # for raid and crypt support, the kernel module is needed unconditionally, even in hostonly mode
-    hostonly='' instmods br_netfilter $IPTABLES_MODULES dm_crypt =crypto
+    hostonly='' instmods br_netfilter $IPTABLES_MODULES
 }
 
 get_pkg_deps() {
