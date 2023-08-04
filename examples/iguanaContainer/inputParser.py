@@ -2,10 +2,17 @@ import json
 import translateUUID
 
 def processInput(fileName):
+
+    # Loads JSON file into a dictionary
+
     with open(fileName, 'r') as f:
         input_dict = json.load(f)
 
+    # Processes the general information
+    # Such as partition table type (only supports GPT right now)
+    # And the initial gap
 
+    # If not specified then the initial gap defaults to 1 MB
     general = input_dict.get("general", {})
 
     label = general.get("label", "gpt")
@@ -19,6 +26,9 @@ def processInput(fileName):
             "blockSize": device_content.get("blockSize", "512B"),
             "partitions": []
         }
+
+        # For when the user wants to partition a disk into multiple equal partitions
+        # Not functioning
 
         # eqPart = device_content.get("equalPartitions", "")
         # if eqPart:
@@ -56,13 +66,23 @@ def processInput(fileName):
             mountPoint = None
 
 
+
+
             if partitionType == "linux":
+                # Gets the UUID if specified
                 uuid = optionalSettings.get("UUID", "").lower()
                 if uuid:
-                    mountPoint = translateUUID.convertUUID(uuid)
+                    # If invalid UUID, use the specified mountpoint instead
+                    try:
+                        mountPoint = translateUUID.convertUUID(uuid)
+                    except:
+                        print("invalid uuid inputted: "+uuid)
+                        mountPoint = optionalSettings.get("mountPoint", "")     
                 elif optionalSettings.get("mountPoint", ""):
+                    # If no UUID specified also use the specified mountpoint instead
                     mountPoint = optionalSettings.get("mountPoint", "")                   
 
+            # Special partition type cases
             elif partitionType == "boot":
                 mountPoint = "/boot/"
             elif partitionType == "efi":
@@ -70,13 +90,17 @@ def processInput(fileName):
             elif partitionType != "swap":
                 raise Exception()
 
+            # Adds a normalized partition info to the device
             temp_device["partitions"].append({
                 "partition_name": partition_name,
                 "type": partition["type"],
                 "mountPoint": mountPoint,
                 "size": partition["size"],
             })
+        # Adds a normalized device info to the list of devices
         deviceList[device_name] = temp_device
+
+    # Returns the normalized device list and the initial gap
     return deviceList, initial_gap
 
 
