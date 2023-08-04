@@ -8,12 +8,12 @@
             "blkSize": "512B",
             "partitions": [
                 {
-                    "size": "1000MB",
+                    "size": "1000MiB",
                     "type": "efi"
                 },
         
                 {
-                    "size": "2000MB",
+                    "size": "2000MiB",
                     "type": "linux",
                     "optional": {
                         "UUID": "75250d76-8cc6-458e-bd66-bd47cc81a812"
@@ -22,7 +22,7 @@
                 },
         
                 {
-                    "size": "3000MB",
+                    "size": "3000kB",
                     "type": "linux",
                     "optional": {
                         "mountPoint": "/var/"
@@ -30,7 +30,7 @@
                 },
         
                 {
-                    "size": "4000MB",
+                    "size": "4000B",
                     "type": "swap",
                     "optional": {
                         "UUID": "0fc63daf-8483-4772-8e79-3d69d8477de4",
@@ -39,7 +39,7 @@
                 },
         
                 {
-                    "size": "5000MB",
+                    "size": "5000KB",
                     "type": "linux"
                 },
                 {
