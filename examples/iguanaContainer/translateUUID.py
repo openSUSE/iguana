@@ -93,7 +93,7 @@ def convertUUID(uuid):
         # Home
         "933ac7e1-2eb4-4f13-b844-0e14e2aef915": "/home/",
 
-        #Server Data
+        # Server Data
         "3b8f8425-20e0-4f3b-907f-1a25a76f98e8": "/srv/",
 
         # Variabale Data
