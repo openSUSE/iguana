@@ -3,6 +3,7 @@ import json
 import platform
 import inputParser
 import re
+import sys
 
 
 # This function is from yomi, can be found at https://github.com/openSUSE/yomi/blob/f3f4ac60852fa79665e77ede90960860ddd684fb/salt/_utils/disk.py#L31
@@ -14,7 +15,7 @@ def units(value, default="MB"):
     """
     valid_units = (
         "B",
-        "KB"
+        "KB",
         "kB",
         "MB",
         "MiB",
@@ -48,6 +49,10 @@ def convertToBytes(value, unit):
     }
     return value * multipliers.get(unit)
 
+
+
+filename = sys.argv[1]
+
 environment = Environment(True)
 
 storage = Storage(environment)
@@ -56,7 +61,7 @@ staging = storage.get_staging()
 
 
 
-with open('input.json', 'r') as f:
+with open(filename, 'r') as f:
     input_dict = json.load(f)
 
 
@@ -65,37 +70,42 @@ print(platform.uname().machine)
 devList, initial_gap = inputParser.processInput('input.json')
 # print(devList, initial_gap)
 
-# storage.probe()
-# probed = storage.get_probed()
 
-# probed = storage.get_probed()
-# print("PROBE1")
-# print(probed)
+startingPoint = convertToBytes(units(initial_gap)[0], units(initial_gap)[1])
 
-# startingPoint = convertToBytes(units(initial_gap)[0], units(initial_gap)[1])
+for device, device_info in devList.items():
+    tempDevice = Disk.create(staging, device)
+    gpt = tempDevice.create_partition_table(PtType_GPT)
 
-# for device, device_info in devList.items():
-#     tempDevice = Disk.create(staging, device)
-#     gpt = tempDevice.create_partition_table(PtType_GPT)
+    block_size, block_unit = units(device_info.get("blockSize", "512B"))
+    blockSizeBytes = convertToBytes(block_size, block_unit)
 
-#     block_size, block_unit = units(device_info.get("blockSize", "512B"))
-#     blockSizeBytes = convertToBytes(block_size, block_unit)
+    for partition in device_info.get("partitions", []):
+        part_size, part_unit =  units(partition["size"])
+        if part_unit != "%":
+            partSizeBytes = convertToBytes(part_size, part_unit)
+        else:
+            print("Does not support percentage unit currently")
+        # else:
+        #     storage.probe()
+        #     probed = storage.get_probed()
+        #     disks = probed.get_all_disks()
+        #     for d in disks:
+        #         print("HERE")
+        #         print(d.get_name())
+        reg = Region(int(startingPoint / blockSizeBytes), int(partSizeBytes / blockSizeBytes), int(blockSizeBytes))
+        gpt.create_partition(partition["partition_name"], reg, PartitionType_PRIMARY)
 
-#     for partition in device_info.get("partitions", []):
-#         part_size, part_unit =  units(partition["size"])
-#         partSizeBytes = convertToBytes(part_size, part_unit)
-#         gpt.create_partition(partition["partition_name"], Region(int(startingPoint / blockSizeBytes), int(partSizeBytes / blockSizeBytes), int(blockSizeBytes)), PartitionType_PRIMARY)
-
-#         startingPoint += partSizeBytes
+        startingPoint += partSizeBytes
 
 
-# print(probed)
+print(staging)
 
 
-# print("partitions on gpt:")
-# for partition in gpt.get_partitions():
-#     print("  %s %s" % (partition, partition.get_number()))
-# print()
+print("partitions on gpt:")
+for partition in gpt.get_partitions():
+    print("  %s %s" % (partition, partition.get_number()))
+print()
 
 tmp1 = BlkDevice.find_by_name(staging, "/dev/sda1")
 print(tmp1)        
