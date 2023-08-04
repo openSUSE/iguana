@@ -1,2 +1,0 @@
-x86_64
-[{'label': 'gpt', 'partitions': [{'partition_name': '/dev/sda1', 'type': 'linux', 'start': 1, 'size': 1000, 'blockSize': 512}, {'partition_name': '/dev/sda2', 'type': 'linux', 'start': 1001, 'size': 2000, 'blockSize': 512}, {'partition_name': '/dev/sda3', 'type': 'linux', 'start': 3001, 'size': 3000, 'blockSize': 512}, {'partition_name': '/dev/sda4', 'type': 'linux', 'start': 6001, 'size': 4000, 'blockSize': 512}, {'partition_name': '/dev/sda5', 'type': 'linux', 'start': 10001, 'size': 5000, 'blockSize': 512}]}]
