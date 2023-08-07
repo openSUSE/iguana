@@ -1,0 +1,9 @@
+name: Uyuni saltboot image based deployment
+
+jobs:
+  saltboot:
+    container:
+      image: <TBD:registry>/iguana-saltboot
+      env:
+        MASTER: <uyuni server>
+        MINION_ID_PREFIX: <prefix of uyuni branch group>
