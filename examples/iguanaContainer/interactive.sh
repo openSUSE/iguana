@@ -28,7 +28,7 @@ then
         if [[ $path == *.json ]]
         then
             echo "Partitioning according to $path"
-            python3 partition.py $path
+            #python3 partition.py $path
         else
             echo "incorrect file type"
         fi
@@ -36,11 +36,15 @@ then
         echo "file does not exist"
     fi
 else
+    # TODO: Figure out how to get the file name from the curl
+    # command, and the run that file. Right now it assumes there
+    # is only one JSON file in the local directory. Will break if
+    # mulitple JSON files are in the same folder.
     read -p "Please enter the URL: " URL
-    curl --insecure -L -O -v $URL
-    filename="$(ls | grep .json)"
-    #echo "$filename"
-    python3 partition.py "$filename"
+    filename=$(mktemp -p .)
+    curl --insecure -L -o $filename -v $URL
+    echo "$filename"
+    #python3 partition.py "$filename"
 fi
 
 exit
