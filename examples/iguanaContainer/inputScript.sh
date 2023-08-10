@@ -2,15 +2,18 @@
 
 # Checks if there is an inputted partitioning
 # file or URL within the kernel cmdline
-input=$(python3 kernelInput.py)
-if [ -z "$input" ]
+
+# This line doesn't work for some reason
+eval $(python3 kernelInput.py)
+
+# PARTITIONING=$(python3 kernelInput.py)
+if [ -z "$PARTITIONING" ]
 then
-    echo empty
     # Not specified in kernel cmdline
     # Now check for environmental variable.
     # Which will be inputted as an argument
-    input=$1
-    if [ -z "$input" ]
+    PARTITIONING=$PARTITIONING_URL
+    if [ -z "$PARTITIONING" ]
     then
         # If no environmental variable is inputted
         # then we run the interactive script
@@ -19,36 +22,34 @@ then
     fi
 fi
 
-# Checks if the input is a valid URL
-if curl -s $input
+filename=$(mktemp -p .)
+curl --insecure -L -o $filename -v $PARTITIONING
+# Checks if the curl created a non empty file
+if [ -s $filename ]
 then
-    # If the URL is valid, then run curl again
-    # and store the contents in a file.
-    # Then run the partitioning program using that
-    # file as input.
-    filename=$(mktemp -p .)
-    curl --insecure -L -o $filename -v $input
-    #python3 partition.py "$filename"
+    # If the URL is valid and a file was created
+    # run the partitioning program using that file as input.
+    python3 partition.py "$filename"
 else
+    rm "$filename"
     # Otherwise if the curl was unsuccessful, in other
     # words the URL was invalid, then check to see if
     # the input is a file path instead
-    if test -f $input
+    if test -f $PARTITIONING
     then  
         # If the input is a file path, then check if
         # the file is a json file
-        echo "$input exists"
-        if [[ $input == *.json ]]
+        echo "$PARTITIONING exists"
+        if [[ $PARTITIONING == *.json ]]
         then
             # If it is a json file, then partition
             # according to the json file
-            echo "Partitioning according to $input"
-            #python3 partition.py $input
+            echo "Partitioning according to $PARTITIONING"
+            python3 partition.py "$PARTITIONING"
         else
-            echo "$input is a file but of incorrect file type"
+            echo "$PARTITIONING is a file but of incorrect file type"
         fi
     else
-        echo "$input is not a valid URL and not a valid file"
+        echo "$PARTITIONING is not a valid URL and not a valid file"
     fi 
 fi
-echo $input

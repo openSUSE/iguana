@@ -124,3 +124,7 @@ print()
 # Prints info about the /dev/sda1 device partition specifically
 tmp1 = BlkDevice.find_by_name(staging, "/dev/sda1")
 print(tmp1)        
+
+# NOTE: Uncommenting the line below will cause the program
+# to impact your current hardware.
+# commit(storage)
