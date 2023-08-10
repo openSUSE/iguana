@@ -3,9 +3,8 @@
 # Define the names/tags of the container
 #!BuildTag: partitioning_container:latest
 FROM opensuse/tumbleweed
-COPY . /iguana/examples/partitioning/
+COPY . /partitioning/
 RUN zypper install -y python3
 RUN zypper install -y libstorage-ng-python3
-ENTRYPOINT /usr/bin/bash /iguana/examples/partitioning/inputScript.sh
-WORKDIR /iguana/examples/partitioning/
-# CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT /usr/bin/bash /partitioning/inputScript.sh
+WORKDIR /partitioning/
