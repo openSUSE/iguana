@@ -17,6 +17,7 @@ then
     then
         # If no environmental variable is inputted
         # then we run the interactive script
+        chmod 777 interactive.sh
         ./interactive.sh
         exit
     fi
