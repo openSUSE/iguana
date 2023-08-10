@@ -1,0 +1,9 @@
+name: partitioner
+description: Workflow utilizing a python disk partitioner program.
+
+jobs:
+  partitioner:
+    container:
+      image: registry.opensuse.org/home/djiang/containers/partitioning_container:latest
+      env:
+        PARTIONING_URL: /iguana/examples/partitioning/input.json
