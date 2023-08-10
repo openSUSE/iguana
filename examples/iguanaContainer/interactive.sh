@@ -28,7 +28,7 @@ then
         if [[ $path == *.json ]]
         then
             echo "Partitioning according to $path"
-            #python3 partition.py $path
+            python3 partition.py $path
         else
             echo "incorrect file type"
         fi
@@ -44,7 +44,7 @@ else
     filename=$(mktemp -p .)
     curl --insecure -L -o $filename -v $URL
     echo "$filename"
-    #python3 partition.py "$filename"
+    python3 partition.py "$filename"
 fi
 
 exit
