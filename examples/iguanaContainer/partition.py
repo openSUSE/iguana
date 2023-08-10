@@ -1,6 +1,4 @@
 from storage import *
-import json
-import platform
 import inputParser
 import re
 import sys
