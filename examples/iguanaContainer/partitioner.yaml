@@ -6,4 +6,4 @@ jobs:
     container:
       image: registry.opensuse.org/home/djiang/containers/partitioning_container:latest
       env:
-        PARTIONING_URL: /partitioning/input.json
+        PARTITIONING_URL: /partitioning/input.json
