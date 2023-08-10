@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 if __name__ == "__main__":
     cmdline = ""
     with open("/proc/cmdline", "r") as cmdfile:
