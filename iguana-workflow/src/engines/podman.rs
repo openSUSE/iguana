@@ -145,7 +145,7 @@ impl ContainerOps for Podman {
         if is_service {
             cmd = cmd.arg("--detach");
         } else {
-            cmd = cmd.arg("--interactive");
+            cmd = cmd.args(["--interactive", "--attach=stdin", "--attach=stdout", "--attach=stderr"]);
         }
 
         if !opts.debug {
