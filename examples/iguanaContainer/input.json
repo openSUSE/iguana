@@ -30,7 +30,7 @@
                 },
         
                 {
-                    "size": "4000B",
+                    "size": "4000KB",
                     "type": "swap",
                     "optional": {
                         "UUID": "0fc63daf-8483-4772-8e79-3d69d8477de4",
@@ -39,11 +39,11 @@
                 },
         
                 {
-                    "size": "5000KB",
+                    "size": "500KB",
                     "type": "linux"
                 },
                 {
-                    "size": "512B",
+                    "size": "512KB",
                     "type": "linux"
                 }
         

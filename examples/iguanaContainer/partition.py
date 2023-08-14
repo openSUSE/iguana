@@ -37,14 +37,14 @@ def units(value, default="MB"):
 def convertToBytes(value, unit):
     multipliers = {
         "B": 1,
-        "kB": 10**3,
-        "KB": 2**10,
-        "MiB": 10**6,
-        "MB": 2**20,
-        "GiB": 10**9,
-        "GB": 2**30,
-        "TiB": 10**12,
-        "TB": 2**40
+        "kB": 2**10,
+        "KB": 10**3,
+        "MiB": 2**20,
+        "MB": 10**6,
+        "GiB": 2**30,
+        "GB": 10**9,
+        "TiB": 2**40,
+        "TB": 10**12
     }
     return value * multipliers.get(unit)
 
@@ -56,24 +56,23 @@ filename = sys.argv[1]
 environment = Environment(True)
 
 storage = Storage(environment)
-
+storage.probe()
 staging = storage.get_staging()
 
 
 # Processes input, outputs a normalized list of devices and the initial gap
-devList, initial_gap = inputParser.processInput('input.json')
+devList, initial_gap = inputParser.processInput(filename)
 # print(devList, initial_gap)
 
 
 # Begins partitioning the regions at the initial gap
 startingPoint = convertToBytes(units(initial_gap)[0], units(initial_gap)[1])
 
-
 for device_name, device_info in devList.items():
 
     # Creates a temporary device with the its name
-    tempDevice = Disk.create(staging, device_name)
-
+    tempDevice = Partitionable.find_by_name(staging, device_name)
+    tempDevice.remove_descendants()
     # For now it automatically creates a GPT partition table
     # Hope to supporst MSDOS in the future
     gpt = tempDevice.create_partition_table(PtType_GPT)
@@ -112,21 +111,8 @@ for device_name, device_info in devList.items():
 
 # Prints all the information after partitioning
 
-print(staging)
-
-# Prints the partitions on the last device in the list
-print("partitions on gpt:")
-for partition in gpt.get_partitions():
-    print("  %s %s" % (partition, partition.get_number()))
-print()
-
-# Prints info about the /dev/sda1 device partition specifically
-tmp1 = BlkDevice.find_by_name(staging, "/dev/sda1")
-print(tmp1)        
+print(staging)     
 
 # NOTE: Uncommenting the line below will cause the program
 # to impact your current hardware.
-#commit(storage)
-
-print("COMMITED (stdout)")
-sys.stderr.write("COMMITED (stderr)")
+commit(storage)

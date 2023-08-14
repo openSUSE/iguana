@@ -24,6 +24,7 @@ def commit(storage, skip_commit = False):
     my_commit_callbacks = MyCommitCallbacks()
     if not skip_commit:
         try:
+            actiongraph = storage.calculate_actiongraph()
             storage.commit(commit_options, my_commit_callbacks)
         except Exception as exception:
             print(exception.what())
