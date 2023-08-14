@@ -17,16 +17,15 @@ then
     then
         # If no environmental variable is inputted
         # then we run the interactive script
-        chmod 777 interactive.sh
         ./interactive.sh
         exit
     fi
 fi
 
 filename=$(mktemp -p .)
-curl --insecure -L -o $filename -v $PARTITIONING
+# curl --insecure -L -o $filename -v $PARTITIONING
 # Checks if the curl created a non empty file
-if [ -s $filename ]
+if curl --insecure -L -o $filename -v $PARTITIONING
 then
     # If the URL is valid and a file was created
     # run the partitioning program using that file as input.
