@@ -1,4 +1,5 @@
 from storage import *
+from commitHelper import *
 import inputParser
 import re
 import sys
@@ -125,4 +126,7 @@ print(tmp1)
 
 # NOTE: Uncommenting the line below will cause the program
 # to impact your current hardware.
-# commit(storage)
+commit(storage)
+
+print("COMMITED (stdout)")
+sys.stderr.write("COMMITED (stderr)")
