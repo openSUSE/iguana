@@ -11,8 +11,8 @@ class MyCommitCallbacks(CommitCallbacksV2):
     def end_action(self, action):
         self.action = None
 
-    # def message(self, message):
-    #     print("message '%s'" % colorize_action(message, self.action))
+    def message(self, message):
+        print("message '%s'" % message)
 
     def error(self, message, what):
         print("error '%s' '%s'" % (message, what))
