@@ -104,7 +104,11 @@ for device_name, device_info in devList.items():
         reg = Region(int(startingPoint / blockSizeBytes), int(partSizeBytes / blockSizeBytes), int(blockSizeBytes))
 
         # Creates the partition on the partition table
-        gpt.create_partition(partition["partition_name"], reg, PartitionType_PRIMARY)
+        part = gpt.create_partition(partition["partition_name"], reg, PartitionType_PRIMARY)
+        try:
+            part.set_id(partition["type"])
+        except Exception as e:
+            part.set_id(ID_LINUX)
 
         startingPoint += partSizeBytes
 
@@ -113,6 +117,8 @@ for device_name, device_info in devList.items():
 
 print(staging)     
 
+
+print(devList)
 # NOTE: Uncommenting the line below will cause the program
 # to impact your current hardware.
 commit(storage)
