@@ -6,51 +6,36 @@
     "devices": {
         "/dev/sda": {
             "blkSize": "512B",
-            "partitions": [
-                {
+            "partitions": [{
                     "size": "1000MiB",
                     "type": "efi"
-                },
-        
-                {
+                },{
                     "size": "2000MiB",
                     "type": "linux",
                     "optional": {
                         "UUID": "75250d76-8cc6-458e-bd66-bd47cc81a812"
-                    }
-                    
-                },
-        
-                {
+                    }    
+                },{
                     "size": "3000kB",
                     "type": "linux",
                     "optional": {
                         "mountPoint": "/var/"
                     }
-                },
-        
-                {
+                },{
                     "size": "4000KB",
                     "type": "swap",
                     "optional": {
                         "UUID": "0fc63daf-8483-4772-8e79-3d69d8477de4",
                         "mountPoint": "/"
                     }
-                },
-        
-                {
+                },{
                     "size": "500KB",
                     "type": "linux"
-                },
-                {
+                },{
                     "size": "512KB",
                     "type": "linux"
                 }
-        
             ]
         }
-            
-
     }
-
 }
