@@ -1,5 +1,6 @@
 import json
 import translateUUID
+from storage import *
 
 def processInput(fileName):
 
@@ -70,11 +71,20 @@ def processInput(fileName):
 
             if partitionType == "linux":
                 # Gets the UUID if specified
+                partID = ID_LINUX
                 uuid = optionalSettings.get("UUID", "").lower()
                 if uuid:
                     # If invalid UUID, use the specified mountpoint instead
                     try:
-                        mountPoint = translateUUID.convertUUID(uuid)
+                        tempID = translateUUID.convertUUID(uuid)[1]
+                        # Since type was specified to be linux already, the UUID cannot be that of
+                        # a swap, boot or efi partition.
+                        if tempID == ID_SWAP or tempID == ID_BIOS_BOOT or tempID == ID_ESP:
+                            print("type is defined as 'linux', but %s is not a linux partition UUID" %uuid )
+                        else:
+                            partID = tempID
+                            mountPoint = translateUUID.convertUUID(uuid)[0]
+                        
                     except:
                         print("invalid uuid inputted: "+uuid)
                         mountPoint = optionalSettings.get("mountPoint", "")     
@@ -85,15 +95,20 @@ def processInput(fileName):
             # Special partition type cases
             elif partitionType == "boot":
                 mountPoint = "/boot/"
+                partID = ID_BIOS_BOOT
             elif partitionType == "efi":
                 mountPoint = "/efi/"
-            elif partitionType != "swap":
+                partID = ID_ESP
+            elif partitionType == "swap":
+                partID = ID_SWAP
+            else:
+                print("invalid type specified: %s" %partitionType)
                 raise Exception()
 
             # Adds a normalized partition info to the device
             temp_device["partitions"].append({
                 "partition_name": partition_name,
-                "type": partition["type"],
+                "type": partID,
                 "mountPoint": mountPoint,
                 "size": partition["size"],
             })

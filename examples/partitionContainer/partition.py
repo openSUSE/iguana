@@ -106,7 +106,7 @@ for device_name, device_info in devList.items():
         # Creates the partition on the partition table
         part = gpt.create_partition(partition["partition_name"], reg, PartitionType_PRIMARY)
         try:
-            part.set_id(partition["type"])
+            part.set_id(int(partition["type"]))
         except Exception as e:
             part.set_id(ID_LINUX)
 
