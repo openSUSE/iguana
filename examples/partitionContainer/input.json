@@ -1,39 +1,24 @@
 {
     "general": {
         "label": "gpt",
-        "initial_gap": "1MB"
+        "initial_gap": "2MB"
     },
     "devices": {
         "/dev/sda": {
             "blkSize": "512B",
             "partitions": [{
-                    "size": "1000MiB",
+                    "size": "512MiB",
                     "type": "efi"
                 },{
-                    "size": "2000MiB",
+                    "size": "2GiB",
+                    "type": "swap"   
+                },{
+                    "size": "16GiB",
                     "type": "linux",
                     "optional": {
-                        "UUID": "75250d76-8cc6-458e-bd66-bd47cc81a812"
-                    }    
-                },{
-                    "size": "3000kB",
-                    "type": "linux",
-                    "optional": {
-                        "mountPoint": "/var/"
-                    }
-                },{
-                    "size": "4000KB",
-                    "type": "swap",
-                    "optional": {
-                        "UUID": "0fc63daf-8483-4772-8e79-3d69d8477de4",
+                        "UUID": "44479540-f297-41b2-9af7-d131d5f0458a",
                         "mountPoint": "/"
-                    }
-                },{
-                    "size": "500KB",
-                    "type": "linux"
-                },{
-                    "size": "512KB",
-                    "type": "linux"
+                    }    
                 }
             ]
         }
