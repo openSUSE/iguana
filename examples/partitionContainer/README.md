@@ -3,6 +3,7 @@
 ## What does it do?
 
 The container will partition the hard disk into a user specified number of partitions. The user can define the specific size of each partition and what type of partition it is _(eg. EFI, swap, root etc...)_. Users also have the option of specifying each partition's type through UUID (https://uapi-group.org/specifications/specs/discoverable_partitions_specification/) as well as its mount point. 
+
 ## Inputting Configurations
 All of the configuration will be passed through a JSON file with the following format:
 ```json
@@ -15,14 +16,17 @@ All of the configuration will be passed through a JSON file with the following f
             "device_name": {
                 "blkSize": "512B",
                 "partitions": [{
-                        "size": "1000MiB",
+                        "size": "512MiB",
                         "type": "efi"
                     },{
-                        "size": "2000MiB",
+                        "size": "2GiB",
+                        "type": "swap"   
+                    },{
+                        "size": "16GiB",
                         "type": "linux",
                         "optional": {
-                            "UUID": "75250d76-8cc6-458e-bd66-bd47cc81a812",
-                            "mountPoint": "/usr/"
+                            "UUID": "44479540-f297-41b2-9af7-d131d5f0458a",
+                            "mountPoint": "/"
                         }    
                     }
                 ]
@@ -30,6 +34,7 @@ All of the configuration will be passed through a JSON file with the following f
         }
     }
 ```
+
 ### Explanation:
 Accepted units for sizes: B, KB, kB, MB, MiB, GB, GiB, TB, TiB
 * **general**

@@ -57,6 +57,7 @@ environment = Environment(True)
 
 storage = Storage(environment)
 storage.probe()
+probed = storage.get_probed()
 staging = storage.get_staging()
 
 
@@ -90,16 +91,9 @@ for device_name, device_info in devList.items():
         if part_unit != "%":
             partSizeBytes = convertToBytes(part_size, part_unit)
         else:
-            print("Does not support percentage unit currently")
-
-        # Code breaks if probing occurs, but using the percentage unit requires probing
-        # else:
-        #     storage.probe()
-        #     probed = storage.get_probed()
-        #     disks = probed.get_all_disks()
-        #     for d in disks:
-        #         print(d.get_name())
-
+            disk = Disk.find_by_name(probed, device_name)
+            dev_size = disk.get_size() - convertToBytes(units(initial_gap)[0], units(initial_gap)[1])
+            partSizeBytes = int(dev_size * (part_size / 100))
         # Creates a region based on the starting point, size, and block size.
         reg = Region(int(startingPoint / blockSizeBytes), int(partSizeBytes / blockSizeBytes), int(blockSizeBytes))
 
@@ -121,4 +115,4 @@ print(staging)
 print(devList)
 # NOTE: Uncommenting the line below will cause the program
 # to impact your current hardware.
-commit(storage)
+# commit(storage)
