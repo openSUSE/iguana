@@ -115,4 +115,4 @@ print(staging)
 print(devList)
 # NOTE: Uncommenting the line below will cause the program
 # to impact your current hardware.
-# commit(storage)
+commit(storage)
