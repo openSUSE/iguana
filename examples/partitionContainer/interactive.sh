@@ -36,10 +36,6 @@ then
         echo "file does not exist"
     fi
 else
-    # TODO: Figure out how to get the file name from the curl
-    # command, and the run that file. Right now it assumes there
-    # is only one JSON file in the local directory. Will break if
-    # mulitple JSON files are in the same folder.
     read -p "Please enter the URL: " URL
     filename=$(mktemp -p .)
     curl --insecure -L -o $filename -v $URL

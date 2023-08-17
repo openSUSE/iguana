@@ -23,7 +23,6 @@ then
 fi
 
 filename=$(mktemp -p .)
-# curl --insecure -L -o $filename -v $PARTITIONING
 # Checks if the curl created a non empty file
 if curl --insecure -L -o $filename -v $PARTITIONING
 then
