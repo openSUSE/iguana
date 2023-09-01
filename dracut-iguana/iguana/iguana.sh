@@ -115,8 +115,9 @@ if [ -n "$IGUANA_CONTROL_URL" ]; then
   fi
 fi
 
+_WORKFLOW=""
 if [ -f "$IGUANA_URL_WORKFLOW" ]; then
-  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$IGUANA_URL_WORKFLOW"
+  _WORKFLOW="$IGUANA_URL_WORKFLOW"
 elif [ -n "$IGUANA_CONTAINERS" ]; then
   Echo "Using container list from kcmdline: ${IGUANA_CONTAINERS}"
   readarray -d , -t container_array <<< "$IGUANA_CONTAINERS"
@@ -135,13 +136,30 @@ EOH
 EOF
   N=$(( N + 1 ))
   done
-  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" /control_containers.yaml
+  _WORKFLOW="/control_containers.yaml"
 # control.yaml is buildin control file in initrd
 elif [ -f "$IGUANA_BUILDIN_WORKFLOW" ]; then
-  $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$IGUANA_BUILDIN_WORKFLOW"
+  _WORKFLOW="$IGUANA_BUILDIN_WORKFLOW"
 fi
 
-Echo "Containers run finished"
+if [ ! -f "$_WORKFLOW" ]; then
+  Echo "ERROR: No usable workflow file found!"
+  sleep 10
+  iguana_reboot_action "reboot" "unless-debug"
+fi
+
+systemctl start iguana-workflow-run
+
+# monitor workflow until finished
+
+# TODO get correct tty
+prepare_console
+if $IGUANA_WORKFLOW "${IGUANA_CMDLINE_EXTRA[@]}" "$_WORKFLOW" <> /dev/tty1 2>&1; then
+  Echo "Workflow run has finished"
+else
+  Echo "Workflow finished with error!"
+fi
+restore_console
 
 # First if workflow set kernelAction then do that
 if [ -f /iguana/kernelAction ]; then
