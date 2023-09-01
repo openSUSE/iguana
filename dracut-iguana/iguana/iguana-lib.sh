@@ -8,9 +8,11 @@ if ! declare -f Echo > /dev/null ; then
 fi
 
 if [ -n "$IGUANA_DEBUG" ]; then
-  Echo "Debug mode - starting secondary tty2"
+  #TODO properly find next available console
+  _tty=/dev/tty2
+  Echo "Debug mode - starting secondary ${_tty}"
   echo "export PS1='iguana@\h:\w> '" > /root/.bashrc
-  setsid -f -- sh -c 'exec /bin/bash </dev/tty2 >/dev/tty2 2>&1'
+  setsid -f -- sh -c "exec /bin/bash <> /dev/${_tty} 2>&1"
 fi
 
 function iguana_reboot_action() {
@@ -78,4 +80,22 @@ function is_root_encrypted() {
   fi
   lsblk -o FSTYPE -n -l "$device" | grep -q "crypto_LUKS" && return 0
   return 1
+}
+
+function prepare_console() {
+setterm -msg off 2>/dev/null || true
+  if ! dbus-send --system --print-reply --dest=org.freedesktop.systemd1 /org/freedesktop/systemd1 \
+    org.freedesktop.systemd1.Manager.SetShowStatus string:off &>/dev/null; then
+	  kill -s SIGRTMAX-9 1
+	  sleep 1
+  fi
+}
+
+function restore_console() {
+	if ! run dbus-send --system --print-reply --dest=org.freedesktop.systemd1 /org/freedesktop/systemd1 \
+	  org.freedesktop.systemd1.Manager.SetShowStatus string: &>/dev/null; then
+		kill -s SIGRTMAX-10 1
+	fi
+	sleep 1
+	setterm -msg on 2>/dev/null || true
 }
